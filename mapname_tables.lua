@@ -8,23 +8,23 @@
 
 
 -- line number is 10 + armyumber for the mexes in the table
-spwnMexArmy = {   {},
-                  {},
-                  {},   
-                  {}, 
-                  {},
-                  {},
-                  {},
-                  {},
-                  {},
-                  {},
-                  {},
-                  {},
-                  {},
-                  {},
-                  {},
-                  {}    };
-                  
+spwnMexArmy = {     {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}    }
+
 
 
 -- line number is 30 + armyumber for the hydros in the table
@@ -43,14 +43,20 @@ spwnHydroArmy ={    {},
                     {},
                     {},
                     {},
-                    {}};
-                  
-spwnAdditionalHydro = {};
+                    {}}
 
-sidemass = {{},{}};
+spwnAdditionalHydro = {}
 
-middlemass = {{},{}};
-                  
-underwatermass = {{},{}};
-                  
-crazyrushOneMex = {};                  
+middlemass = {{},{}}
+
+sidemass = {{},{}}
+
+underwatermass = {{},{}}
+
+islandmass ={{},{}}
+
+backmass = {{},{}}
+
+crazyrushOneMex = {}
+
+DuplicateListMex = {}
