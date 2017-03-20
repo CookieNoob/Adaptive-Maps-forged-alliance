@@ -19,7 +19,7 @@ local optional_reclaim = ScenarioInfo.Options.optional_reclaim or 1
 local mirrormex = ScenarioInfo.Options.mirrormex or 1
 local optional_civilian_base = ScenarioInfo.Options.optional_civilian_base or 1
 local dupicatesinglemex = ScenarioInfo.Options.dupicatesinglemex or 1
-
+--local removeRock = ScenarioInfo.Options.removeRock or 1
 
 --stuff for the crazyrush script
 local currentResSpot = 0
@@ -49,7 +49,13 @@ end
 function OnStart()
     --check if a message needs to be displayed
     ForkThread(showmessage)
-
+    
+--[[    --remove some of the rocks
+    if(removeRock > 1) then
+        ForkThread(Rock_RemoveRocks, 1 - 0.2* (removeRock - 1) )
+        LOG('rocks removed')
+    end]]
+    
     --activate the map expansion code
 --    ScenarioFramework.SetPlayableArea('AREA_4' , false)
     if(Expand_StartupCheck()) then
@@ -72,11 +78,6 @@ function OnStart()
     if(TreeRegrowSpeed > 1) then
         ForkThread(Tree_StartGrowingTrees)
     end
-
-    local supportcandidate = ScenarioInfo.Options.SupportCampain or 1
-    if(supportcandidate > 1) then
-        ForkThread(CampainMessage)
-    end
     
     ForkThread(gatherFeedback)
     
@@ -85,6 +86,15 @@ end
 
 
 
+
+function gatherFeedback()
+        WaitSeconds(10)
+        BroadcastMSG('If you see any bugs with the map, plz tell CookieNoob. Thx.',  -- message
+                     30,                                                             -- fontsize
+                     'ff9400',                                                       -- color
+                     10,                                                             -- duration
+                     'center')                                                       -- position
+end
 
 
 
@@ -165,11 +175,9 @@ function ScenarioUtils.CreateResources()
 -- check which army isnt there
     local Notpresentarmies = {}
     local ArmyList = ListArmies()
-    if ScenarioInfo.Ultimate then
-        for j, spawnmex in ScenarioInfo.Options.SpawnMex or {} do
-            if spawnmex then
-                ArmyList[j] = 'ARMY_' .. j
-            end
+    for j, spawnmex in ScenarioInfo.Options.SpawnMex or {} do
+        if spawnmex then
+            ArmyList[table.getn(ArmyList) + 1] = 'ARMY_' .. j
         end
     end
 
@@ -193,9 +201,6 @@ function ScenarioUtils.CreateResources()
                 Notpresentarmies[numberOfNotPresentArmies] = army2;
                 numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
             end
-        end
-        if(automex == 6) then
-            doit = DoitIfInList(name, crazyrushOneMex, MassString, doit);
         end
 
     elseif(automex == 2) then
@@ -244,6 +249,9 @@ function ScenarioUtils.CreateResources()
             end
             for l = 1, islandmex - 1  do
                 doit=FalseIfInList(name, spwnAdditionalislandmex[l], MassString, doit);
+            end
+            if(automex == 6) then
+                doit = DoitIfInList(name, crazyrushOneMex, MassString, doit);
             end
 
         end
@@ -685,15 +693,15 @@ function Tree_NextCycle(listoftrees, firstIndex, lastIndex)
         local respawnprop = Tree_CheckIfReclaimed(listoftrees[i])
         if(respawnprop > 0) then
             MissingTrees = true
-            if(math.random() < respawnprop/40/TreeRegrowSpeed) then
+            if(math.random() < respawnprop/30/TreeRegrowSpeed) then
                 numberToRespawn = numberToRespawn + 1
                 RespawnOnNextCycle[numberToRespawn] = i
             end
         end
     end
-    WaitSeconds(5)
+    WaitSeconds(30)
     if(not MissingTrees) then
-        WaitSeconds(30/TreeRegrowSpeed)
+        WaitSeconds(110/TreeRegrowSpeed)
     end
     for i, _ in RespawnOnNextCycle or {} do
         CreateProp( VECTOR3( listoftrees[RespawnOnNextCycle[i]][2],
@@ -734,11 +742,15 @@ function Tree_CheckIfReclaimed(tree)
         if(string.find(t:GetBlueprint().BlueprintId, "tree" )) then
             NumberOfCloseTrees = NumberOfCloseTrees + 1
         end
-        if(NumberOfCloseTrees> 10) then
-            return 10
+        if(NumberOfCloseTrees > 20) then
+            return - 1
         end
     end
-    return NumberOfCloseTrees
+    if NumberOfCloseTrees > 10 then
+        return 20- NumberOfCloseTrees
+    else
+        return NumberOfCloseTrees
+    end
 end
 
 
@@ -797,60 +809,18 @@ end
 
 
 
-
-
+--[[
 ------------------------------------------------------------------------
-----------Support a Campain---------------------------------------------
+------remove some of the rock reclaim-----------------------------------
 ------------------------------------------------------------------------
-function CampainMessage()
-    local supportcandidate = ScenarioInfo.Options.SupportCampain - 1
-    local messagelist = {{  "Vote for Tokyto, save FAF!","Vote for Tokyto, save FAF!","Vote for Tokyto, save FAF!","Vote for Tokyto, save FAF!","Vote for Tokyto, save FAF!","Vote for Tokyto, save FAF!",
-                            "Vote for Tokyto, save FAF!","Vote for Tokyto, save FAF!", "\"9/10\" - Stups", "\"I want him to date my sister\" -Exotic_Retard ", "\"Taught me how to cheese\" -France",
-                            "\"Took good care of Paul\" - Heaven", "\"After he stopped taking good care of Paul, he gave Paul a proper burial\" - Heaven", "\"Only crashed Paul's car 6 out of 8 times\" - Heaven",
-                            "\"Built a house for Paul's innocent sister\" - Heaven", "\"Eats fresh apples on TS everyday\" - Heaven", "\"Uncontested initiator of the Tokyto Effect\" - Exotic_Retard",
-                            "\"The only Cybran I tolerate\" - Heaven", "\"Already countering the nuke\" - The Future Player Councillor", "\"10/10 we would give him more if we could!\" - IGN",
-                            "\"Very generous, especially when it comes to other people's rating\" - Exotic_Retard", "\"Real team player\" - Tokyto's manager", "\"Snipes 8/6 players on the enemy side (of the map)\" - speed2",
-                            "\"Chased him for nudes for 2 years\" - Blodir", "\"Not a meany poop ^_^\" - Violet_Ania", "\"Donated to Beetle charity\" - Actual true story from buglife.org.uk",
-                            "\"Author of Anyone Can Snipe\" - Some Cookbook Label", "\"On good terms with Pupujussi\" - Burg Krems", "\"Showed me how to snipe\" - Simo Häyhä \"The White Death\"",
-                            "\"Helped me write A brief history of Beetles\" - Stephen Hawking", "\"Showed me how to rush a nuke.\" - J. Robert Oppenheimer", "\"He doesn't beetle friends. He has mercy.\" - Ithilis",
-                            "\"Like a beetle explosion, i would erupt all the wonderful things i saw and understood about Tokyto\" - Boris Pasternak", "\"A true inspiration\" - The Beatles", "\"Composed the song Imagine, after scouting Tokyo's nuke at minute 14\" - John Lennon"},
-
-
-                         {  "Vote for Giebmasse!"},
-
-
-
-                         {  "Vote for Evildrew!", "I will make the survey to right the wrong! ***Repeal most of the Balance Patch*** (Evildrew)", "Player Councilor Election: Vote for Evildrew, vote for Freedom.",
-                            "Player Councilor Election: A vote NOT for Evildrew is a vote for communism.", "#Evildrew is running for Player Councilor. Make FAF great again! Vote for Evildrew!"}
-
-                         }
-
-    local positionlist = {'lefttop', 'leftcenter', 'leftbottom', 'righttop', 'rightcenter', 'rightbottom', 'rightbottom', 'centertop', 'center', 'center', 'center', 'center', 'centerbottom'}
-    local colorlist = {'830000', '000f82', '490082'}
-    local messagenumber = 1
-    local seed = 0
-
-    for i,_ in ListArmies() do
-        seed = seed + i*17 + i*i*23
+function Rock_RemoveRocks(percentage)
+    LOG('remove ', 1 - percentage, ' percent of the rock reclaim')
+    local totalProps = GetReclaimablesInRect(Rect(unpack(ScenarioInfo.PlayableArea)))
+    for _ , r in totalProps or {} do
+        local propid = r:GetBlueprint().BlueprintId
+        if(string.find(propid, 'rock' ) or string.find(propid, 'iceberg') or string.find(propid, 'boulder') or string.find(propid, 'fieldstone' )) then
+            r:AdjustHealth(r, -(r:GetHealth())*(1-percentage))
+            --r:SetMaxReclaimValues( percentage * (r:GetBlueprint().Economy.ReclaimTime), percentage * (r:GetBlueprint().Economy.ReclaimMassMax), percentage * (r:GetBlueprint().Economy.ReclaimEnergyMax))
+        end
     end
-    math.randomseed(seed)
-
-    while (true) do
-        WaitSeconds(210 + messagenumber * 30)
-        BroadcastMSG(messagelist[supportcandidate][math.ceil(math.random(table.getn(messagelist[supportcandidate])))],  -- message
-                     30,                                                                                                -- fontsize
-                     colorlist[supportcandidate],                                                                       -- color
-                     10,                                                                                                -- duration
-                     positionlist[math.ceil(math.random(table.getn(positionlist)))])                                    -- position
-        messagenumber = messagenumber + 1
-    end
-end
-
-function gatherFeedback()
-        WaitSeconds(10)
-        BroadcastMSG('If you see any bugs with the map, plz tell CookieNoob. Thx.',  -- message
-                     30,                                                             -- fontsize
-                     'ff9400',                                                       -- color
-                     10,                                                             -- duration
-                     'center')                                                       -- position
-end
+end]]--

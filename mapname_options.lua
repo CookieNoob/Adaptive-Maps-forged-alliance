@@ -30,6 +30,26 @@ options ={
 },
 
 {
+    default = 5,
+    label = "change natural reclaim",
+    help = "Changes the amount of mass and energy in rocks and trees on the map.",
+    key = 'naturalReclaimModifier',
+    pref = 'naturalReclaimModifier',
+    values = {
+        { text = "3 times higher", help = "Enhances the reclaim by a factor of 3.", key = 3, },
+        { text = "2 times higher", help = "Enhances the reclaim by a factor of 2.", key = 2, },
+        { text = "1.5 times higher", help = "Enhances the reclaim by a factor of 1.5.", key = 1.5, },
+        { text = "1.25 times higher", help = "Enhances the reclaim by a factor of 1.25.", key = 1.25, },
+        { text = "disabled", help = "Doesnt change the reclaim values.", key = 1, },
+        { text = "0.8 times lower", help = "Removes 20 percent of the mass in rocks.", key = 0.8, },
+        { text = "0.6 times lower", help = "Removes 40 percent of the mass in rocks.", key = 0.6, },
+        { text = "0.4 times lower", help = "Removes 60 percent the mass in rocks.", key = 0.4, },
+        { text = "0.2 times lower", help = "Removes 80 percent the mass in rocks.", key = 0.2, },
+    },
+},
+
+
+{
     default = 1,
     label = "mirror spots",
     help = "Only spawn ressources when mirror spots are taken",
@@ -42,19 +62,7 @@ options ={
     },
 },
 
-{
-    default = 1,
-    label = "Support a campain",
-    help = "Allows the host to display convincing ads to support his favorite candidate in the upcoming election.",
-    key = 'SupportCampain',
-    pref = 'SupportCampain',
-    values = {
-        { text = "disabled", help = "Dont show support for any candidate.", key = 1, },
-        { text = "Tokyto_", help = "Display some catching lines to help Tokyto_.", key = 2, },
-        { text = "Giebmasse", help = "Display some catching lines to help Giebmasse.", key = 3, },
-        { text = "Evildrew", help = "Display some catching lines to help Evildrew.", key = 4, },
-    },
-},
+
 
 
 
@@ -228,7 +236,20 @@ options ={
     },
 },
 
-
+{
+    default = 1,
+    label = "reduce rock reclaim",
+    help = "Reduces the amount of mass in rocks on the map on game launch.",
+    key = 'removeRock',
+    pref = 'removeRock',
+    values = {
+        { text = "disabled", help = "Rocks have the full mass value.", key = 1, },
+        { text = "20 percent", help = "Removes 20 percent of the mass in rocks.", key = 2, },
+        { text = "40 percent", help = "Removes 40 percent of the mass in rocks.", key = 3, },
+        { text = "60 percent", help = "Removes 60 percent the mass in rocks.", key = 4, },
+        { text = "80 percent", help = "Removes 80 percent the mass in rocks.", key = 5, },
+    },
+},
 ]]--
 
 };

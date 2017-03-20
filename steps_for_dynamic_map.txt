@@ -40,6 +40,10 @@
 
 -- map expansion to larger area works now --
 
+13) add "AdaptiveMap = true," to the scenario.lua file (this will enable a special version of "closed spot")
+
+
+
 you can still change the map and add decals or even change the hightmap
 
 if you add mexes and remove some, dont forget to adjust the table!
