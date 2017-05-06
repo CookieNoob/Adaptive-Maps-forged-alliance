@@ -45,6 +45,7 @@ spwnHydroArmy ={    {},
                     {},
                     {}}
 
+-- table for the "additional hydro" option
 spwnAdditionalHydro = {}
 
 middlemass = {{},{}}
@@ -57,6 +58,11 @@ islandmass ={{},{}}
 
 backmass = {{},{}}
 
+-- table for the "dynamic spawn - crazyrush 1 mex" option
 crazyrushOneMex = {}
 
+-- add mexes in this table also to the corresponding player (allows to increase the mex count in the starting base)
+extramass = {}
+
+-- table for the "forward crazyrush option"
 DuplicateListMex = {}

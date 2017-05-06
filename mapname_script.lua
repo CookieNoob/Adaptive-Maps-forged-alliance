@@ -19,6 +19,7 @@ local optional_reclaim = ScenarioInfo.Options.optional_reclaim or 1
 local mirrormex = ScenarioInfo.Options.mirrormex or 1
 local optional_civilian_base = ScenarioInfo.Options.optional_civilian_base or 1
 local dupicatesinglemex = ScenarioInfo.Options.dupicatesinglemex or 1
+local additionalmex = ScenarioInfo.Options.additionalmex or 1
 --local removeRock = ScenarioInfo.Options.removeRock or 1
 
 --stuff for the crazyrush script
@@ -165,6 +166,7 @@ function ScenarioUtils.CreateResources()
     local spwnAdditionalbackmex = Tables.backmass or {}
     local crazyrushOneMex = Tables.crazyrushOneMex or {}
     local DuplicateListMex = Tables.DuplicateListMex or {}
+    local AdditionalMass = Tables.extramass or {}
 
 
     -- find out if there are spots that do not have a mirror
@@ -253,7 +255,9 @@ function ScenarioUtils.CreateResources()
             if(automex == 6) then
                 doit = DoitIfInList(name, crazyrushOneMex, MassString, doit);
             end
-
+            if(additionalmex == 1) then
+                doit = FalseIfInList(name, AdditionalMass, MassString, doit)
+            end
         end
 
         if (doit) then

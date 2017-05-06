@@ -250,6 +250,19 @@ options ={
         { text = "80 percent", help = "Removes 80 percent the mass in rocks.", key = 5, },
     },
 },
+
+{
+    default = 1,
+    label = "additional mex",
+    help = "Spawns one additional mex for each present player in the starting base.",
+    key = 'additionalmex',
+    pref = 'additionalmex',
+    values = {
+        { text = "disabled", help = "Spawn the usual ressources.", key = 1, },
+        { text = "enabled", help = "Spawns one additional mex per player.", key = 2, },
+    },
+},
+
 ]]--
 
 };
