@@ -332,7 +332,7 @@ function spawnressource(Position,restype, spawnhpr)
         lod,         -- LOD
         0,           -- Duration (0 == does not expire)
         -1,          -- army (-1 == not owned by any single army)
-        0            -- ???
+        0            -- fidelity
     );
     CreateResourceDeposit(restype, Position[1], Position[2], Position[3], Size/2);
     if spawnhpr then
