@@ -238,21 +238,6 @@ options ={
 
 {
     default = 1,
-    label = "reduce rock reclaim",
-    help = "Reduces the amount of mass in rocks on the map on game launch.",
-    key = 'removeRock',
-    pref = 'removeRock',
-    values = {
-        { text = "disabled", help = "Rocks have the full mass value.", key = 1, },
-        { text = "20 percent", help = "Removes 20 percent of the mass in rocks.", key = 2, },
-        { text = "40 percent", help = "Removes 40 percent of the mass in rocks.", key = 3, },
-        { text = "60 percent", help = "Removes 60 percent the mass in rocks.", key = 4, },
-        { text = "80 percent", help = "Removes 80 percent the mass in rocks.", key = 5, },
-    },
-},
-
-{
-    default = 1,
     label = "additional mex",
     help = "Spawns one additional mex for each present player in the starting base.",
     key = 'additionalmex',
