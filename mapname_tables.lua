@@ -23,7 +23,7 @@ spwnMexArmy = {     {},
                     {},
                     {},
                     {},
-                    {}    }
+                    {}}
 
 
 
@@ -45,24 +45,25 @@ spwnHydroArmy ={    {},
                     {},
                     {}}
 
--- table for the "additional hydro" option
-spwnAdditionalHydro = {}
 
-middlemass = {{},{}}
 
-sidemass = {{},{}}
+--SCALING OPTIONS
+--exampleMexes = {{'c'},{'b'},{'a'}},       --exampleMexes = {{'a'}}
+	--option key=1 (e=0): spawn a+b+c           --option key=1 (e=0): spawn a
+	--option key=2 (e=1): spawn a+b, c off		  --option key=2 (e=1): a off
+	--option key=3 (e=2): spawn a, b+c off
+	--option key=4 (e=3): a+b+c off
+	
+--add core mexes (refers to spwnMexArmy)
+coreMexes = {{}}
 
-underwatermass = {{},{}}
+--add extra mexes
+extraMexes = {{}}
 
-islandmass ={{},{}}
 
-backmass = {{},{}}
+--CRAZYRUSH OPTIONS
+--determine forward crazy rush mexes
+forwardCrazyrushMexes = {}
 
--- table for the "dynamic spawn - crazyrush 1 mex" option
-crazyrushOneMex = {}
-
--- add mexes in this table also to the corresponding player (allows to increase the mex count in the starting base)
-extramass = {}
-
--- table for the "forward crazyrush option"
-DuplicateListMex = {}
+--only use these mexes/resources for crazy rush 1 mex (refers to spwnMexArmy)
+crazyrushOneMexes = {}
