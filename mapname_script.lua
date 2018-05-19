@@ -8,7 +8,7 @@ local Tables = import('/maps/mapfolder/mapname_tables.lua')
 --enter maximum possible player count
 local maxPlayerOnMap = 16
 
--- import options.lua settings: chosen key or default key
+--import options.lua settings: chosen key or default key
 local dynamic_spawn = ScenarioInfo.Options.dynamic_spawn or 1
 local crazyrush_mexes = ScenarioInfo.Options.crazyrush_mexes or 1
 local core_mexes = ScenarioInfo.Options.core_mexes or 1
@@ -117,7 +117,7 @@ end
 ------------------------------------------------------------------------
 ----- Optional Units (civilians, reclaim, jamming, ...) ----------------
 ------------------------------------------------------------------------
---call from OnPopulate to prevent despawning map-decal glitch
+--call from OnPopulate to prevent despawning map-decal glitch (map-decal disappeared, when optional structures (probably due to attached decal) and a certain amount of unit footprint/track-decals were spawned)
 function OptionalUnits()
 	LOG("ADAPTIVE: Optional Units:")
 	LOG("ADAPTIVE: optional_civilian_base = ", optional_civilian_base)
@@ -126,14 +126,14 @@ function OptionalUnits()
 	LOG("ADAPTIVE: optional_naval_wreckage = ", optional_naval_wreckage)
 	LOG("ADAPTIVE: jamming = ", jamming)
 	
-	-- ... civi base
+	--civilian base
 	if(optional_civilian_base == 2) then
 		ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', true)
 	elseif(optional_civilian_base == 3) then
 		ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', false)
 	end
 	
-	-- ... civi base defenses
+	-- civilian defenses
 	if(optional_civilian_defenses == 2) then
 		ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
 	elseif(optional_civilian_defenses == 3) then
