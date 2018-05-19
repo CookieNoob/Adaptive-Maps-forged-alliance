@@ -103,14 +103,14 @@ end
 
 --Startmessage
 function gatherFeedback()
-		WaitSeconds(10)
-		LOG("ADAPTIVE: gatherFeedback")
-		BroadcastMSG(
-			'If you see any bugs with the map, plz tell CookieNoob. Thx.',	-- message
-			16,								-- fontsize
-			'd0d0d0',							-- color
-			5,								-- duration
-			'center')							-- position
+	WaitSeconds(10)
+	LOG("ADAPTIVE: gatherFeedback")
+	BroadcastMSG(
+		'If you see any bugs with the map, plz tell CookieNoob. Thx.',	-- message
+		16,								-- fontsize
+		'd0d0d0',							-- color
+		5,								-- duration
+		'center')							-- position
 end
 
 
@@ -125,7 +125,7 @@ function OptionalUnits()
 	LOG("ADAPTIVE: optional_wreckage = ", optional_wreckage)
 	LOG("ADAPTIVE: optional_naval_wreckage = ", optional_naval_wreckage)
 	LOG("ADAPTIVE: jamming = ", jamming)
-	
+
 	--civilian base
 	if(optional_civilian_base == 2) then
 		ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', true)
