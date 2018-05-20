@@ -11,7 +11,7 @@ local maxPlayerOnMap = 16
 --IMPORT: options.lua settings
 --chosen key or default key
 local dynamic_spawn = ScenarioInfo.Options.dynamic_spawn or 1
-local additional_hydro = ScenarioInfo.Options.additional_hydro or 1
+local additional_hydros = ScenarioInfo.Options.additional_hydros or 1
 local optional_reclaim_middle = ScenarioInfo.Options.optional_reclaim_middle or 1
 local optional_reclaim_adaptive = ScenarioInfo.Options.optional_reclaim_adaptive or 1
 local middle_mexes = ScenarioInfo.Options.middle_mexes or 1
@@ -237,7 +237,7 @@ function ScenarioUtils.CreateResources()
     -- LOG("ADAPTIVE: crazyrush_mexes = ", crazyrush_mexes)
     -- LOG("ADAPTIVE: core_mexes = ", core_mexes)
     -- LOG("ADAPTIVE: extra_mexes = ", extra_mexes)
-    -- LOG("ADAPTIVE: additional_hydro = ", additional_hydro)
+    -- LOG("ADAPTIVE: additional_hydros = ", additional_hydros)
     -- LOG("ADAPTIVE: middle_mexes = ", middle_mexes)
     -- LOG("ADAPTIVE: side_mexes = ", side_mexes)
     -- LOG("ADAPTIVE: underwater_mexes = ", underwater_mexes)
@@ -369,7 +369,7 @@ function ScenarioUtils.CreateResources()
                 doit=FalseIfInList(name, spwnHydroArmy[armynumber], HydroString, doit);
             end
 
-            if(additional_hydro == 1) then
+            if(additional_hydros == 1) then
                 doit=FalseIfInList(name, additionalHydros, HydroString, doit);
             end
             for l = 1, middle_mexes - 1   do
