@@ -1,27 +1,35 @@
 ------------------------------------------------------------------------
------ Script by CookieNoob and KeyBlue ---------------------------------
+----- Script by CookieNoob and KeyBlue (modified by svenni_badbwoi)-----
 ------------------------------------------------------------------------
 local ScenarioUtils = import('/lua/sim/ScenarioUtilities.lua')
 local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 local Tables = import('/maps/mapfolder/mapname_tables.lua')
 
--- get scenario info about how the map should look like, if no option is changed, change it to the default
-local automex = ScenarioInfo.Options.automex or 1
-local hydroplus = ScenarioInfo.Options.hydroplus or 1
+--enter maximum possible player count
+local maxPlayerOnMap = 16
+
+--IMPORT: options.lua settings
+--chosen key or default key
+local dynamic_spawn = ScenarioInfo.Options.dynamic_spawn or 1
+local additional_hydro = ScenarioInfo.Options.additional_hydro or 1
 local optional_reclaim_middle = ScenarioInfo.Options.optional_reclaim_middle or 1
 local optional_reclaim_adaptive = ScenarioInfo.Options.optional_reclaim_adaptive or 1
-local middlemex = ScenarioInfo.Options.middlemex or 1
-local sidemex = ScenarioInfo.Options.sidemex or 1
-local underwatermex = ScenarioInfo.Options.underwatermex or 1
-local backmex = ScenarioInfo.Options.backmex or 1
-local islandmex = ScenarioInfo.Options.islandmex or 1
-local optional_reclaim = ScenarioInfo.Options.optional_reclaim or 1
-local mirrormex = ScenarioInfo.Options.mirrormex or 1
-local optional_civilian_base = ScenarioInfo.Options.optional_civilian_base or 1
-local dupicatesinglemex = ScenarioInfo.Options.dupicatesinglemex or 1
-local additionalmex = ScenarioInfo.Options.additionalmex or 1
+local middle_mexes = ScenarioInfo.Options.middle_mexes or 1
+local side_mexes = ScenarioInfo.Options.side_mexes or 1
+local underwater_mexes = ScenarioInfo.Options.underwater_mexes or 1
+local back_mexes = ScenarioInfo.Options.back_mexes or 1
+local island_mexes = ScenarioInfo.Options.island_mexes or 1
+local optional_wreckage = ScenarioInfo.Options.optional_wreckage or 2
+local optional_naval_wreckage = ScenarioInfo.Options.optional_naval_wreckage or 2
+local optional_civilian_base = ScenarioInfo.Options.optional_civilian_base or 2
+local optional_civilian_defenses = ScenarioInfo.Options.optional_civilian_defenses or 2
+local crazyrush_mexes = ScenarioInfo.Options.crazyrush_mexes or 1
+local additional_mexes = ScenarioInfo.Options.additional_mexes or 1
+local core_mexes = ScenarioInfo.Options.core_mexes or 1
+local extra_mexes = ScenarioInfo.Options.extra_mexes or 2
+local jamming = ScenarioInfo.Options.jamming or 1
 
---stuff for the crazyrush script
+--stuff for crazyrush script
 local currentResSpot = 0
 local generatedMass = {}
 local checkedExtractor = {}
@@ -30,56 +38,70 @@ local MexList ={}
 --stuff for expansion script
 local spawnedMassSpots={}
 local spawnedMexNumber = 0
-local expandmap = ScenarioInfo.Options.expandmap or 1
+local expand_map = ScenarioInfo.Options.expand_map or 1
 
 --stuff for tree script
 local InitialListTrees = {}
-local TreeRegrowSpeed = ScenarioInfo.Options.tree or 1
+local TreeRegrowSpeed = ScenarioInfo.Options.TreeRegrowSpeed or 1
 math.randomseed(1)
 
 
-
-
+------------------------------------------------------------------------
+----- Initialization Part ----------------------------------------------
+------------------------------------------------------------------------
+--OnPopulate
 function OnPopulate()
-------------------------------------------------------------------------
------ special options (civilians, reclaim...) --------------------------
-------------------------------------------------------------------------
-
-    if ((optional_reclaim == 2) or (optional_reclaim == 3)) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_' .. optional_reclaim, true)
-    elseif (optional_reclaim == 4) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_2', true)
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_3', true)
-    end
-    if optional_reclaim_middle > 1 then
-        for midreclaim = 2, optional_reclaim_middle do
-            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Middle_'..midreclaim, true)
-        end
-    end
-    if(optional_reclaim_adaptive > 1) then
-        AddFactionReclaimBack(optional_reclaim_adaptive)
-    end
-    if(optional_civilian_base > 1) then
-        local spawncivs = true
-        for m = 13, 14 do
-            armystring = "ARMY_" .. m
-            for _, army in ListArmies() do
-                if( army == armystring) then
-                    LOG("ULTIMATE found player in civ base. remove civs")
-                    spawncivs = false
-                end
-            end
-        end
-        if(spawncivs) then
-            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base', false)
-            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defences_'.. optional_civilian_base, false)
-        end
-    end
-	
+    LOG("ADAPTIVE: OnPopulate")
     ScenarioUtils.InitializeArmies();
+    OptionalUnits();
 end
 
+--Crazyrush
+function startCrazyrushLoop()
+    --wait to fix bug with civi mex wrecks activating crazyrush
+    WaitSeconds(1)
+    
+    --activate forward_crazyrush_mexes
+    if crazyrush_mexes == 2  then
+        LOG("ADAPTIVE: activate Forward Crazyrush Mexes")
+        ForkThread(Crazyrush_checkMassPoint, false)
+        
+    --activate crazyrush 1 mex
+    elseif crazyrush_mexes == 3  then
+        LOG("ADAPTIVE: activate Crazyrush 1 Mex")
+        ForkThread(Crazyrush_checkMassPoint, true)
+        
+     --activate crazyrush
+    elseif crazyrush_mexes == 4  then
+        LOG("ADAPTIVE: activate Crazyrush")
+        ForkThread(Crazyrush_checkMassPoint, true)
+    end
+end
+
+--Regrowing Trees
+function startGrowingTreesLoop()
+
+    --activate fast regrowing trees
+    if TreeRegrowSpeed == 2 then
+        LOG("ADAPTIVE: activate fast regrowing Trees")
+        ForkThread(Tree_StartGrowingTrees)
+        
+    --activate regrowing trees
+    elseif TreeRegrowSpeed == 3 then
+        LOG("ADAPTIVE: activate regrowing Trees")
+        ForkThread(Tree_StartGrowingTrees)
+        
+    --activate slow regrowing trees
+    elseif TreeRegrowSpeed == 4 then
+        LOG("ADAPTIVE: activate slow regrowing Trees")
+        ForkThread(Tree_StartGrowingTrees)
+    end
+end
+
+--OnStart
 function OnStart()
+    LOG("ADAPTIVE: OnStart")
+    
     --check if a message needs to be displayed
     ForkThread(showmessage)
     
@@ -90,165 +112,303 @@ function OnStart()
     end]]
     
     --activate the map expansion code
---    ScenarioFramework.SetPlayableArea('AREA_4' , false)
+    --ScenarioFramework.SetPlayableArea('AREA_4' , false)
     if(Expand_StartupCheck()) then
         ForkThread(Expand_MapExpandConditions)
     end
-
-    --activate crazyrush in case the correct option is checked
-    if(automex >5) then
-        LOG("ULTIMATE activate Crazyrush")
-        ForkThread(Crazyrush_checkMassPoint, true)
-    else
-        if(dupicatesinglemex == 2) then
-            LOG("ULTIMATE activate Crazyrush, singlemex mode")
-            ForkThread(Crazyrush_checkMassPoint, false)
-        end
-    end
-
-
-    --activate regrowing trees
-    if(TreeRegrowSpeed > 1) then
-        ForkThread(Tree_StartGrowingTrees)
-    end
+    
+    --set color for civilians
+    --SetArmyColor('ARMY_17',245,203,150)
+    
+    startGrowingTreesLoop()
+    
+    ForkThread(startCrazyrushLoop)
     
     ForkThread(gatherFeedback)
-    
 end
 
-
-
-
-
+--Startmessage
 function gatherFeedback()
-        WaitSeconds(10)
-        BroadcastMSG('If you see any bugs with the map, plz tell CookieNoob. Thx.',  -- message
-                     30,                                                             -- fontsize
-                     'ff9400',                                                       -- color
-                     10,                                                             -- duration
-                     'center')                                                       -- position
+    WaitSeconds(10)
+    BroadcastMSG('If you see any bugs with the map, plz tell CookieNoob. Thx.',  -- message
+                 30,                                                             -- fontsize
+                 'ff9400',                                                       -- color
+                 10,                                                             -- duration
+                 'center')                                                       -- position
 end
-
-
-
-
 
 
 ------------------------------------------------------------------------
------ dynamic spawns ---------------------------------------------------
+----- Optional Units (civilians, reclaim, jamming, ...) ----------------
+------------------------------------------------------------------------
+--call from OnPopulate to prevent despawning map-decal glitch (map-decal disappeared, when optional structures (probably due to decal) and a certain amount of unit footprint/track-decals were spawned)
+function OptionalUnits()
+    LOG("ADAPTIVE: Optional Units:")
+    -- LOG("ADAPTIVE: optional_reclaim_middle = ", optional_reclaim_middle)
+    -- LOG("ADAPTIVE: optional_reclaim_adaptive = ", optional_reclaim_adaptive)
+    -- LOG("ADAPTIVE: optional_civilian_base = ", optional_civilian_base)
+    -- LOG("ADAPTIVE: optional_civilian_defenses = ", optional_civilian_defenses)
+    LOG("ADAPTIVE: optional_wreckage = ", optional_wreckage)
+    -- LOG("ADAPTIVE: optional_naval_wreckage = ", optional_naval_wreckage)
+    -- LOG("ADAPTIVE: jamming = ", jamming)
+
+    --Land Wreckage
+    if optional_wreckage > 1 then
+        for w = 2, optional_wreckage do
+            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_' .. w, true)
+        end
+    end
+    
+    --Naval Wreckage
+    if optional_naval_wreckage > 1 then
+        for n = 2, optional_naval_wreckage do
+            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Naval_'..n, true)
+        end
+    end
+    
+    if optional_reclaim_middle > 1 then
+        for midreclaim = 2, optional_reclaim_middle do
+            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Middle_'..midreclaim, true)
+        end
+    end
+    
+    if(optional_reclaim_adaptive > 1) then
+        AddFactionReclaimBack(optional_reclaim_adaptive)
+    end
+    
+    if(optional_civilian_base > 1) then
+        local spawncivs = true
+        for m = 13, 14 do
+            armystring = "ARMY_" .. m
+            for _, army in ListArmies() do
+                if( army == armystring) then
+                    LOG("ADAPTIVE: found player in civ base. remove civs")
+                    spawncivs = false
+                end
+            end
+        end
+        if(spawncivs) then
+            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base', false)
+            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defences_'.. optional_civilian_base, false)
+        end
+    end
+    
+--[[ --code without removing base or defenses / separates base and defenses
+    --Civilian Base
+    if(optional_civilian_base == 2) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', true)
+    elseif(optional_civilian_base == 3) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', false)
+    end
+    
+    --Civilian Defenses
+    if(optional_civilian_defenses == 2) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
+    elseif(optional_civilian_defenses == 3) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', true)
+    elseif(optional_civilian_defenses == 4) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', true)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_4', true)
+    elseif(optional_civilian_defenses == 5) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
+    elseif(optional_civilian_defenses == 6) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', false)
+    elseif(optional_civilian_defenses == 7) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', false)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_4', false)
+    end]]
+    
+    --Jamming
+    if jamming == 2 then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Jamming', false)
+    end
+
+
+------------------------------------------------------------------------
+----- Create Resources -------------------------------------------------
 ------------------------------------------------------------------------
 function ScenarioUtils.CreateResources()
--- Script by CookieNoob and KeyBlue
-
-    LOG("ULTIMATE create Ressources. Settings:")
-    LOG("ULTIMATE", automex, hydroplus, optional_reclaim_middle, optional_reclaim_adaptive, middlemex, sidemex, underwatermex, optional_reclaim, mirrormex, optional_civilian_base)
-    -- get map markers
+    LOG("ADAPTIVE: Create Resources:")
+    LOG("ADAPTIVE: dynamic_spawn = ", dynamic_spawn)
+    -- LOG("ADAPTIVE: crazyrush_mexes = ", crazyrush_mexes)
+    -- LOG("ADAPTIVE: core_mexes = ", core_mexes)
+    -- LOG("ADAPTIVE: extra_mexes = ", extra_mexes)
+    -- LOG("ADAPTIVE: additional_hydro = ", additional_hydro)
+    -- LOG("ADAPTIVE: middle_mexes = ", middle_mexes)
+    -- LOG("ADAPTIVE: side_mexes = ", side_mexes)
+    -- LOG("ADAPTIVE: underwater_mexes = ", underwater_mexes)
+    -- LOG("ADAPTIVE: back_mexes = ", back_mexes)
+    -- LOG("ADAPTIVE: island_mexes = ", island_mexes)
+    -- LOG("ADAPTIVE: additional_mexes = ", additional_mexes)
+    
+    --get map markers
     local markers = ScenarioUtils.GetMarkers();
 
--- table of which ressources belong to which player, it is sorted in such a way that the first line
--- corresponds to player one, the second to player 2 and so on... load it from the _tables.lua file
-
+    --IMPORT: table.lua content (player bound resources + additional resources)
+    --it is sorted in such a way that the first line corresponds to player one, the second to player 2 and so on...
     local spwnMexArmy = Tables.spwnMexArmy or {}
     local spwnHydroArmy = Tables.spwnHydroArmy or {}
-    local spwnAdditionalHydro = Tables.spwnAdditionalHydro or {}
-    local spwnAdditionalmiddlemass = Tables.middlemass or {}
-    local spwnAdditionalsidemass = Tables.sidemass or {}
-    local spwnAdditionalunderwatermex = Tables.underwatermass or {}
-    local spwnAdditionalislandmex = Tables.islandmass or {}
-    local spwnAdditionalbackmex = Tables.backmass or {}
-    local crazyrushOneMex = Tables.crazyrushOneMex or {}
-    local DuplicateListMex = Tables.DuplicateListMex or {}
-    local AdditionalMass = Tables.extramass or {}
+    local additionalHydros = Tables.additionalHydros or {}
+    local middleMexes = Tables.middleMexes or {}
+    local sideMexes = Tables.sideMexes or {}
+    local underwaterMexes = Tables.underwaterMexes or {}
+    local islandMexes = Tables.islandMexes or {}
+    local backMexes = Tables.backMexes or {}
+    local crazyrushOneMexes = Tables.crazyrushOneMexes or {}
+    local forwardCrazyrushMexes = Tables.forwardCrazyrushMexes or {}
+    local additionalMexes = Tables.additionalMexes or {}
+    local coreMexes = Tables.coreMexes or {}
+    local extraMexes = Tables.extraMexes or {}
 
-
-    -- find out if there are spots that do not have a mirror
-    -- in that case store the pair in the list with false
-
+    --find out if there are spots that do not have a mirror
+    --in that case store the pair in the list with false
     local numberOfNotPresentArmies = 1
-
--- check which army isnt there
+    
+    --check which army isnt there
     local Notpresentarmies = {}
     local ArmyList = ListArmies()
+    
+    --spawn mexes on closed spots if requested
     for j, spawnmex in ScenarioInfo.Options.SpawnMex or {} do
         if spawnmex then
             ArmyList[table.getn(ArmyList) + 1] = 'ARMY_' .. j
         end
     end
-
-    if(automex == 1 or automex == 6 or automex == 7) then
-        for m = 1, 8 do
+    
+    --DYNAMIC SPAWN OF RESOURCES
+    --mirror slots
+    if dynamic_spawn == 1 then
+        for m = 1, (maxPlayerOnMap/2) do
             local army1 = (2*m - 1)
             local army2 = (2*m)
             local army1String = "ARMY_" .. army1
             local army2String = "ARMY_" .. army2
-
-            local here = 0;
+            
+            --compare 2 armys and find mirrored armys
+            local found_Army1 = false
+            local found_Army2 = false
             for number, army in ArmyList do
-                if( army == army1String or army == army2String ) then
-                    here = here + 1;
+                if army == army1String then
+                    found_Army1 = true
+                elseif army == army2String then
+                    found_Army2 = true
                 end
             end
-
-            if ( (mirrormex == 1 and here < 1 ) or (mirrormex == 2 and here < 2) ) then
+            if found_Army1 == false and found_Army2 == false then
                 Notpresentarmies[numberOfNotPresentArmies] = army1;
                 numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
                 Notpresentarmies[numberOfNotPresentArmies] = army2;
                 numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
             end
         end
-
-    elseif(automex == 2) then
+        
+    --used slot
+    elseif dynamic_spawn == 2 then
+        for armyIndex = 1, maxPlayerOnMap do
+            local armyStringA = "ARMY_" .. armyIndex
+            local foundArmyOnTheField = false
+            for _, armyStringB in ArmyList do
+                if( armyStringA == armyStringB ) then
+                    foundArmyOnTheField = true
+                    break
+                end
+            end
+            if ( not foundArmyOnTheField ) then
+                Notpresentarmies[numberOfNotPresentArmies] = armyIndex;
+                numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
+            end
+        end
+        
+    --FIX SETUP FOR X PLAYER
+    --2v2 setup armys 1-4 (remove 5-16)
+    elseif(dynamic_spawn == 3) then
+        for m = 5, 16 do
+            Notpresentarmies[numberOfNotPresentArmies] = m;
+            numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
+        end
+        
+    --4v4 setup, armys 1-8 (remove 9-16)
+    elseif(dynamic_spawn == 4) then
         for m = 9, 16 do
             Notpresentarmies[numberOfNotPresentArmies] = m;
             numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
         end
-
-    elseif(automex == 3) then
+        
+    --6v6 setup, army 1-12 (remove 13-16)
+    elseif(dynamic_spawn == 5) then
+        for m = 13, 16 do
+            Notpresentarmies[numberOfNotPresentArmies] = m;
+            numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
+        end
+        
+    --8v8 setup, armies 1-16 (remove none)
+    elseif(dynamic_spawn == 6) then
         Notpresentarmies = {};
     end
 
-
+    --SPAWN RESOURCES
+    --(marker=Mex)
     for name, tblData in pairs(markers) do
--- spawn resources?
-
--- only spawn ressources (obviously)
+    
+        --only spawn resources (obviously)
         if (not tblData.resource) then
             doit = false;
         else
-        -- standard resources, spawn it
+            -- standard resources, spawn it
             doit = true;
-
--- remove the spawn when a player is not present, loop over all not present armies and check if the marker
--- for the current mex/hydro is corresponds to one of those in the list
+            
+            --FalseIfInList = REMOVE/DONT SPAWN MARKER IN LIST
+            --remove the spawn when a player is not present, loop over all not present armies and check if the marker for the current mex/hydro is corresponds to one of those in the list
             for _ ,armynumber in Notpresentarmies do
--- loop over all markers of mexes in the table of the row of the missing army
+                --loop over all markers of mexes in the table of the row of the missing army
                 doit=FalseIfInList(name, spwnMexArmy[armynumber], MassString, doit);
                 doit=FalseIfInList(name, spwnHydroArmy[armynumber], HydroString, doit);
             end
 
-            if(hydroplus == 1) then
-                doit=FalseIfInList(name, spwnAdditionalHydro, HydroString, doit);
+            if(additional_hydro == 1) then
+                doit=FalseIfInList(name, additionalHydros, HydroString, doit);
             end
-            for l = 1, middlemex - 1   do
-                doit=FalseIfInList(name, spwnAdditionalmiddlemass[l], MassString, doit);
+            for l = 1, middle_mexes - 1   do
+                doit=FalseIfInList(name, middleMexes[l], MassString, doit);
             end
-            for l = 1, sidemex - 1  do
-                doit=FalseIfInList(name, spwnAdditionalsidemass[l], MassString, doit);
+            for l = 1, side_mexes - 1  do
+                doit=FalseIfInList(name, sideMexes[l], MassString, doit);
             end
-            for l = 1, underwatermex - 1  do
-                doit=FalseIfInList(name, spwnAdditionalunderwatermex[l], MassString, doit);
+            for l = 1, underwater_mexes - 1  do
+                doit=FalseIfInList(name, underwaterMexes[l], MassString, doit);
             end
-            for l = 1, backmex - 1  do
-                doit=FalseIfInList(name, spwnAdditionalbackmex[l], MassString, doit);
+            for l = 1, back_mexes - 1  do
+                doit=FalseIfInList(name, backMexes[l], MassString, doit);
             end
-            for l = 1, islandmex - 1  do
-                doit=FalseIfInList(name, spwnAdditionalislandmex[l], MassString, doit);
+            for l = 1, island_mexes - 1  do
+                doit=FalseIfInList(name, islandMexes[l], MassString, doit);
             end
-            if(automex == 6) then
-                doit = DoitIfInList(name, crazyrushOneMex, MassString, doit);
+
+            if(additional_mexes == 1) then
+                doit = FalseIfInList(name, additionalMexes, MassString, doit)
             end
-            if(additionalmex == 1) then
-                doit = FalseIfInList(name, AdditionalMass, MassString, doit)
+            
+            --remove "coreMexes"
+            for e = 1, core_mexes - 1  do
+                doit=FalseIfInList(name, coreMexes[e], MassString, doit);
+                --LOG("ADAPTIVE: removing coreMexes")
+            end
+            
+            --remove "extraMexes"
+            for e = 1, extra_mexes - 1  do
+                doit=FalseIfInList(name, extraMexes[e], MassString, doit);
+                --LOG("ADAPTIVE: removing extraMexes")
+            end
+            
+            --FalseIfNotInList = ONLY USE MARKER IN LIST
+            --use only "crazyrushOneMexes"
+            if crazyrush_mexes == 3 then
+                doit = FalseIfNotInList(name, crazyrushOneMexes, MassString, doit);
+                --LOG("ADAPTIVE: only crazyrushOneMexes")
             end
         end
 
@@ -257,10 +417,12 @@ function ScenarioUtils.CreateResources()
                 spawnedMexNumber = spawnedMexNumber + 1
                 spawnedMassSpots[spawnedMexNumber] = name
             end
-            if DoitIfInList(name, DuplicateListMex, MassString, true) and dupicatesinglemex == 2 then
-                spawnressource(tblData.position,tblData.type, false)
+            
+            --enable 'forwardCrazyrushMexes'
+            if crazyrush_mexes == 2 and FalseIfNotInList(name, forwardCrazyrushMexes, MassString, true) then
+                spawnresource(tblData.position,tblData.type, false)
             else
-                spawnressource(tblData.position,tblData.type, true)
+                spawnresource(tblData.position,tblData.type, true)
             end
         end
     end
@@ -291,7 +453,7 @@ function FalseIfInList(name,list, string_function, _doit)
     return _doit;
 end
 
-function DoitIfInList(name, list, string_function, _doit)
+function FalseIfNotInList(name, list, string_function, _doit)
     for k = 1, table.getn(list) do
         if(name == (string_function(list[k]))) then
             return _doit
@@ -300,43 +462,40 @@ function DoitIfInList(name, list, string_function, _doit)
     return false
 end
 
-function spawnressource(Position,restype, spawnhpr)
-    local albedo,bp,lod,Size
-
-    albedo = "/env/common/splats/";
-    if(restype== 'Mass') then
-        albedo = albedo .. "mass_marker.dds"
+function spawnresource(Position,restype, spawnhpr)
+    -- check type of resource and set parameters
+    local bp, albedo, size, lod;
+    if restype == "Mass" then
+        albedo = "/env/common/splats/mass_marker.dds";
         bp = "/env/common/props/massDeposit01_prop.bp";
-        lod = 100
-        Size = 2
+        size = 2;
+        lod = 100;
     else
-        albedo = albedo .. "hydrocarbon_marker.dds"
+        albedo = "/env/common/splats/hydrocarbon_marker.dds";
         bp = "/env/common/props/hydrocarbonDeposit01_prop.bp";
-        lod = 200
-        Size = 6
+        size = 6;
+        lod = 200;
     end
-
-    CreateSplat(
-        Position,    -- Position
-        0,           -- Heading (rotation)
-        albedo,      -- Texture name for albedo
-        Size, Size,  -- SizeX/Z
-        lod,         -- LOD
-        0,           -- Duration (0 == does not expire)
-        -1,          -- army (-1 == not owned by any single army)
-        0            -- fidelity
-    );
-    CreateResourceDeposit(restype, Position[1], Position[2], Position[3], Size/2);
+    
+    -- create the resource
+    CreateResourceDeposit(restype, Position[1], Position[2], Position[3], size/2);
+    
+    -- create the resource graphic on the map
     if spawnhpr then
         CreatePropHPR(bp, Position[1], Position[2], Position[3], Random(0,360), 0, 0);
     end
+    -- create the resource icon on the map
+    CreateSplat(
+        Position,                # Position
+        0,                       # Heading (rotation)
+        albedo,                  # Texture name for albedo
+        size, size,              # SizeX/Z
+        lod,                     # LOD
+        0,                       # Duration (0 == does not expire)
+        -1,                      # army (-1 == not owned by any single army)
+        0                        # ???
+    );
 end
-
-
-
-
-
-
 
 
 ------------------------------------------------------------------------
@@ -403,15 +562,8 @@ function BroadcastMSG(message, fontsize, RGBColor, duration, location)
 -- broadcast a text message to players
 -- possible locations = lefttop, leftcenter, leftbottom,  righttop, rightcenter, rightbottom, rightbottom, centertop, center, centerbottom
 ----------------------------------------
-	PrintText(message, fontsize, 'ff' .. RGBColor, duration , location) ;
+    PrintText(message, fontsize, 'ff' .. RGBColor, duration , location) ;
 end
-
-
-
-
-
-
-
 
 
 ------------------------------------------------------------------------
@@ -431,20 +583,20 @@ function Crazyrush_checkMassPoint(AllOrList)
                             Crazyrush_GenerateResourcesMarker(posx + 2, posy)
                             Crazyrush_GenerateResourcesMarker(posx, posy - 2)
                             Crazyrush_GenerateResourcesMarker(posx, posy + 2)
+                            WaitSeconds( 0.001 )
                         end
-                        WaitSeconds( 0.01 )
                     end
                 end
             end
             WaitSeconds( 1 )
         end
     else
-        local DuplicateListMex = Tables.DuplicateListMex or {}
-        if(table.getn(DuplicateListMex)== 0) then
+        local forwardCrazyrushMexes = Tables.forwardCrazyrushMexes or {}
+        if(table.getn(forwardCrazyrushMexes)== 0) then
             return 0
         else
             for marker,markerpointer in pairs(ScenarioUtils.GetMarkers()) do
-                if DoitIfInList(marker, DuplicateListMex, MassString, true) then
+                if FalseIfNotInList(marker, forwardCrazyrushMexes, MassString, true) then
                     MexList[table.getn(MexList) + 1]= {markerpointer.position[1], markerpointer.position[3]}
                     CreatePropHPR('/env/common/props/hydrocarbonDeposit01_prop.bp', markerpointer.position[1],
                                   GetTerrainHeight(markerpointer.position[1], markerpointer.position[3]),
@@ -464,11 +616,11 @@ function Crazyrush_checkMassPoint(AllOrList)
                                     Crazyrush_GenerateResourcesMarker(posx + 2, posy)
                                     Crazyrush_GenerateResourcesMarker(posx, posy - 2)
                                     Crazyrush_GenerateResourcesMarker(posx, posy + 2)
+                                    WaitSeconds( 0.001 )
                                 end
                             end
                         end
                     end
-                    WaitSeconds( 0.01 )
                 end
                 WaitSeconds( 1 )
             end
@@ -503,7 +655,7 @@ function Crazyrush_GenerateResourcesMarker(x, y)
             foundIt = true
         end
     end
-
+    
     if(not foundIt)then
         tmptable = {x, y}
         table.insert(generatedMass, tmptable)
@@ -532,28 +684,22 @@ function Crazyrush_CreateResources(markers)
     --local markers = GetMarkers()
     for i, tblData in pairs(markers) do
         if tblData.resource then
-            spawnressource(tblData.position, tblData.type, true)
+            spawnresource(tblData.position, tblData.type, true)
         end
     end
 end
 
 
-
-
-
-
-
 ------------------------------------------------------------------------
 ----- Expansion part ---------------------------------------------------
 ------------------------------------------------------------------------
-
 -- Expansion script adapted from Primus_Alpha by Super, Ithilis_Quo and Speed2
 function Expand_MapExpandConditions()
-    if(expandmap < 7) then
-        ScenarioFramework.CreateTimerTrigger(Expand_MapExpand, 60*5*(expandmap-2), true)
+    if(expand_map < 7) then
+        ScenarioFramework.CreateTimerTrigger(Expand_MapExpand, 60*5*(expand_map-2), true)
     end
-    if(expandmap >= 7 ) then
-        local MexToBuild = Expand_CountMexMarkersInArea('AREA_1') * 0.1* (expandmap + 1)
+    if(expand_map >= 7 ) then
+        local MexToBuild = Expand_CountMexMarkersInArea('AREA_1') * 0.1* (expand_map + 1)
         while not ScenarioInfo.MapAlreadyExpanded do
             local curMexies = 0
             for _, brain in ArmyBrains do
@@ -597,31 +743,27 @@ end
 function Expand_StartupCheck()
 --check if a player is outside of the starting area and expand the map in that case
     ScenarioInfo.MapAlreadyExpanded = false
-    LOG("ULTIMATE Activate map expansion script. Setting = ", expandmap)
+    LOG("ADAPTIVE: Activate map expansion script. Setting = ", expand_map)
 
     for m = 13, 14 do
         armystring = "ARMY_" .. m
         for _, army in ListArmies() do
             if army == armystring then
-                LOG("ULTIMATE found player outside of playable region. Expand map")
+                LOG("ADAPTIVE: found player outside of playable region. Expand map")
                 Expand_MapExpand()
                 return false
             end
         end
     end
-    if expandmap == 1 then
+    if expand_map == 1 then
         return false
     end
-    if expandmap == 2 then
+    if expand_map == 2 then
         Expand_MapExpand()
         return false
     end
     return true
 end
-
-
-
-
 
 
 ------------------------------------------------------------------------
@@ -654,7 +796,7 @@ function Tree_StartGrowingTrees()
             end
         end
     end
-    LOG("ULTIMATE Tree script finished initialization, total number of trees = ", firstIndex)
+    LOG("ADAPTIVE: Tree script finished initialization, total number of trees = ", firstIndex)
 end
 
 function Tree_InitializeTrees(area, list, firstIndex)
@@ -670,7 +812,7 @@ function Tree_InitializeTrees(area, list, firstIndex)
             i = i + 1
         end
     end
-    LOG("ULTIMATE Trees initialized, number in this area = ", i - firstIndex)
+    LOG("ADAPTIVE: Trees initialized, number in this area = ", i - firstIndex)
     return i - firstIndex
 end
 
@@ -709,7 +851,7 @@ end
 
 function Tree_CheckIfReclaimed(tree)
     local NumberOfCloseTrees = 0
-
+    
     local area1 = {
         ["x0"] = tree[2] - 0.05,
         ["y0"] = tree[4] - 0.05,
@@ -727,7 +869,7 @@ function Tree_CheckIfReclaimed(tree)
             end
         end
     end
-
+    
     local area2 = {
         ["x0"] = tree[2] - 1.5,
         ["y0"] = tree[4] - 1.5,
@@ -748,7 +890,6 @@ function Tree_CheckIfReclaimed(tree)
         return NumberOfCloseTrees
     end
 end
-
 
 
 ------------------------------------------------------------------------
