@@ -55,8 +55,8 @@ options ={
     default = 1,
     label = "additional hydros",
     help = "additional hydros in the oceans.",
-    key = 'additional_hydro',
-    pref = 'additional_hydro',
+    key = 'additional_hydros',
+    pref = 'additional_hydros',
     values = {
         { text = "disabled", help = "Only spawn a hydro for the players.", key = 1, },
         { text = "enabled", help = "Also spawn a hydro on the bottom of the ocean.", key = 2, },
