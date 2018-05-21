@@ -403,7 +403,7 @@ function ScenarioUtils.CreateResources()
             end
             
             for e = 1, base_mexes - 1 do
-                doit=FalseIfInList(name, baseMexes, MassString, doit)
+                doit=FalseIfInList(name, baseMexes[e], MassString, doit)
             end
             
             for e = 1, expansion_mexes - 1 do
