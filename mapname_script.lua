@@ -326,30 +326,53 @@ function ScenarioUtils.CreateResources()
             end
         end
         
+    --no mirror = no resources
+    elseif dynamic_spawn == 3 then
+        for m = 1, (maxPlayerOnMap/2) do
+            local army1 = (2*m - 1)
+            local army2 = (2*m)
+            local army1String = "ARMY_" .. army1
+            local army2String = "ARMY_" .. army2
+
+            local here = 0;
+            for number, army in ArmyList do
+                if( army == army1String or army == army2String ) then
+                    here = here + 1;
+                end
+            end
+
+            if here < 2 then
+                Notpresentarmies[numberOfNotPresentArmies] = army1;
+                numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
+                Notpresentarmies[numberOfNotPresentArmies] = army2;
+                numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
+            end
+        end
+        
     --FIX SETUP FOR X PLAYER
     --2v2 setup armys 1 - 4 (remove 5 - maxPlayerOnMap)
-    elseif(dynamic_spawn == 3) then
+    elseif(dynamic_spawn == 4) then
         for m = 5, maxPlayerOnMap do
             Notpresentarmies[numberOfNotPresentArmies] = m;
             numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
         end
         
     --4v4 setup, armys 1 - 8 (remove 9 - maxPlayerOnMap)
-    elseif(dynamic_spawn == 4) then
+    elseif(dynamic_spawn == 5) then
         for m = 9, maxPlayerOnMap do
             Notpresentarmies[numberOfNotPresentArmies] = m;
             numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
         end
         
     --6v6 setup, army 1 - 12 (remove 13 - maxPlayerOnMap)
-    elseif(dynamic_spawn == 5) then
+    elseif(dynamic_spawn == 6) then
         for m = 13, maxPlayerOnMap do
             Notpresentarmies[numberOfNotPresentArmies] = m;
             numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
         end
         
     --8v8 setup, armies 1 - maxPlayerOnMap (remove none)
-    elseif(dynamic_spawn == 6) then
+    elseif(dynamic_spawn == 7) then
         Notpresentarmies = {};
     end
 
