@@ -10,23 +10,25 @@ local maxPlayerOnMap = 16
 
 --IMPORT: options.lua settings
 --chosen key or default key
+--resources
 local dynamic_spawn = ScenarioInfo.Options.dynamic_spawn or 1
+local crazyrush_mexes = ScenarioInfo.Options.crazyrush_mexes or 1
 local additional_hydros = ScenarioInfo.Options.additional_hydros or 1
-local optional_reclaim_middle = ScenarioInfo.Options.optional_reclaim_middle or 1
-local optional_reclaim_adaptive = ScenarioInfo.Options.optional_reclaim_adaptive or 1
+local extra_mexes = ScenarioInfo.Options.extra_mexes or 1
 local middle_mexes = ScenarioInfo.Options.middle_mexes or 1
 local side_mexes = ScenarioInfo.Options.side_mexes or 1
 local underwater_mexes = ScenarioInfo.Options.underwater_mexes or 1
-local back_mexes = ScenarioInfo.Options.back_mexes or 1
 local island_mexes = ScenarioInfo.Options.island_mexes or 1
-local optional_wreckage = ScenarioInfo.Options.optional_wreckage or 2
-local optional_naval_wreckage = ScenarioInfo.Options.optional_naval_wreckage or 2
-local optional_civilian_base = ScenarioInfo.Options.optional_civilian_base or 2
-local optional_civilian_defenses = ScenarioInfo.Options.optional_civilian_defenses or 2
-local crazyrush_mexes = ScenarioInfo.Options.crazyrush_mexes or 1
-local additional_mexes = ScenarioInfo.Options.additional_mexes or 1
 local core_mexes = ScenarioInfo.Options.core_mexes or 1
-local extra_mexes = ScenarioInfo.Options.extra_mexes or 2
+local base_mexes = ScenarioInfo.Options.base_mexes or 1
+local expansion_mexes = ScenarioInfo.Options.expansion_mexes or 1
+--units
+local optional_wreckage = ScenarioInfo.Options.optional_wreckage or 1
+local optional_naval_wreckage = ScenarioInfo.Options.optional_naval_wreckage or 1
+local optional_wreckage_middle = ScenarioInfo.Options.optional_wreckage_middle or 1
+local optional_adaptive_faction_wreckage = ScenarioInfo.Options.optional_adaptive_faction_wreckage or 1
+local optional_civilian_base = ScenarioInfo.Options.optional_civilian_base or 1
+local optional_civilian_defenses = ScenarioInfo.Options.optional_civilian_defenses or 1
 local jamming = ScenarioInfo.Options.jamming or 1
 
 --stuff for crazyrush script
@@ -38,11 +40,11 @@ local MexList ={}
 --stuff for expansion script
 local spawnedMassSpots={}
 local spawnedMexNumber = 0
-local expand_map = ScenarioInfo.Options.expand_map or 1
+local expand_map = ScenarioInfo.Options.expand_map or 1 --works with 1, but default/key = 2 in options
 
 --stuff for tree script
 local InitialListTrees = {}
-local TreeRegrowSpeed = ScenarioInfo.Options.TreeRegrowSpeed or 1
+local TreeRegrowSpeed = ScenarioInfo.Options.TreeRegrowSpeed or 1 --default = 5 leads to key = 1
 math.randomseed(1)
 
 
@@ -56,23 +58,45 @@ function OnPopulate()
     OptionalUnits();
 end
 
+--OnStart
+function OnStart()
+    LOG("ADAPTIVE: OnStart")
+    --check if a message needs to be displayed
+    ForkThread(showmessage)
+    
+    --activate the map expansion code
+    --ScenarioFramework.SetPlayableArea('AREA_4' , false)
+    if(Expand_StartupCheck()) then
+        ForkThread(Expand_MapExpandConditions)
+    end
+    
+    --set color for civilians
+    --SetArmyColor('ARMY_17',245,203,150)
+    
+    ForkThread(startCrazyrushLoop)
+    
+    startGrowingTreesLoop()
+    
+    ForkThread(gatherFeedback)
+end
+
 --Crazyrush
 function startCrazyrushLoop()
     --wait to fix bug with civi mex wrecks activating crazyrush
     WaitSeconds(1)
     
     --activate forward_crazyrush_mexes
-    if crazyrush_mexes == 2  then
+    if crazyrush_mexes == 2 then
         LOG("ADAPTIVE: activate Forward Crazyrush Mexes")
         ForkThread(Crazyrush_checkMassPoint, false)
         
     --activate crazyrush 1 mex
-    elseif crazyrush_mexes == 3  then
+    elseif crazyrush_mexes == 3 then
         LOG("ADAPTIVE: activate Crazyrush 1 Mex")
         ForkThread(Crazyrush_checkMassPoint, true)
         
      --activate crazyrush
-    elseif crazyrush_mexes == 4  then
+    elseif crazyrush_mexes == 4 then
         LOG("ADAPTIVE: activate Crazyrush")
         ForkThread(Crazyrush_checkMassPoint, true)
     end
@@ -98,42 +122,13 @@ function startGrowingTreesLoop()
     end
 end
 
---OnStart
-function OnStart()
-    LOG("ADAPTIVE: OnStart")
-    
-    --check if a message needs to be displayed
-    ForkThread(showmessage)
-    
---[[    --remove some of the rocks
-    if(removeRock > 1) then
-        ForkThread(Rock_RemoveRocks, 1 - 0.2* (removeRock - 1) )
-        LOG('rocks removed')
-    end]]
-    
-    --activate the map expansion code
-    --ScenarioFramework.SetPlayableArea('AREA_4' , false)
-    if(Expand_StartupCheck()) then
-        ForkThread(Expand_MapExpandConditions)
-    end
-    
-    --set color for civilians
-    --SetArmyColor('ARMY_17',245,203,150)
-    
-    startGrowingTreesLoop()
-    
-    ForkThread(startCrazyrushLoop)
-    
-    ForkThread(gatherFeedback)
-end
-
 --Startmessage
 function gatherFeedback()
     WaitSeconds(10)
-    BroadcastMSG('If you see any bugs with the map, plz tell CookieNoob. Thx.',  -- message
-                 30,                                                             -- fontsize
-                 'ff9400',                                                       -- color
-                 10,                                                             -- duration
+    BroadcastMSG('If you discover any map-related bugs, pls tell the map author. Thx.',  -- message
+                 16,                                                             -- fontsize
+                 'd0d0d0',                                                       -- color
+                 5,                                                             -- duration
                  'center')                                                       -- position
 end
 
@@ -144,13 +139,13 @@ end
 --call from OnPopulate to prevent despawning map-decal glitch (map-decal disappeared, when optional structures (probably due to decal) and a certain amount of unit footprint/track-decals were spawned)
 function OptionalUnits()
     LOG("ADAPTIVE: Optional Units:")
-    -- LOG("ADAPTIVE: optional_reclaim_middle = ", optional_reclaim_middle)
-    -- LOG("ADAPTIVE: optional_reclaim_adaptive = ", optional_reclaim_adaptive)
-    -- LOG("ADAPTIVE: optional_civilian_base = ", optional_civilian_base)
-    -- LOG("ADAPTIVE: optional_civilian_defenses = ", optional_civilian_defenses)
     LOG("ADAPTIVE: optional_wreckage = ", optional_wreckage)
-    -- LOG("ADAPTIVE: optional_naval_wreckage = ", optional_naval_wreckage)
-    -- LOG("ADAPTIVE: jamming = ", jamming)
+    LOG("ADAPTIVE: optional_naval_wreckage = ", optional_naval_wreckage)
+    LOG("ADAPTIVE: optional_wreckage_middle = ", optional_wreckage_middle)
+    LOG("ADAPTIVE: optional_adaptive_faction_wreckage = ", optional_adaptive_faction_wreckage)
+    LOG("ADAPTIVE: optional_civilian_base = ", optional_civilian_base)
+    LOG("ADAPTIVE: optional_civilian_defenses = ", optional_civilian_defenses)
+    LOG("ADAPTIVE: jamming = ", jamming)
 
     --Land Wreckage
     if optional_wreckage > 1 then
@@ -166,16 +161,52 @@ function OptionalUnits()
         end
     end
     
-    if optional_reclaim_middle > 1 then
-        for midreclaim = 2, optional_reclaim_middle do
+    --Middle Wreckage
+    if optional_wreckage_middle > 1 then
+        for midreclaim = 2, optional_wreckage_middle do
             ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Middle_'..midreclaim, true)
         end
     end
     
-    if(optional_reclaim_adaptive > 1) then
-        AddFactionReclaimBack(optional_reclaim_adaptive)
+    --Adaptive Faction Wreckage
+    if(optional_adaptive_faction_wreckage > 1) then
+        AddFactionReclaimBack(optional_adaptive_faction_wreckage)
     end
     
+    --Civilian Base (only)
+    --spawn wreckage
+    if(optional_civilian_base == 2) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', true)
+    --spawn operational
+    elseif(optional_civilian_base == 3) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', false)
+    end
+    
+    --Civilian Defenses (only)    
+    --spawn wreckage
+    if(optional_civilian_defenses == 2) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
+    elseif(optional_civilian_defenses == 3) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', true)
+    elseif(optional_civilian_defenses == 4) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', true)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_4', true)
+    --spawn operational
+    --needs to include radar, power and e-storage to work properly
+    elseif(optional_civilian_defenses == 5) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
+    elseif(optional_civilian_defenses == 6) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', false)
+    elseif(optional_civilian_defenses == 7) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', false)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_4', false)
+    end
+    
+--[[    --remove Civilian Base and Civilian Defenses if player spwans in civilian base
     if(optional_civilian_base > 1) then
         local spawncivs = true
         for m = 13, 14 do
@@ -191,41 +222,13 @@ function OptionalUnits()
             ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base', false)
             ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defences_'.. optional_civilian_base, false)
         end
-    end
-    
---[[ --code without removing base or defenses / separates base and defenses
-    --Civilian Base
-    if(optional_civilian_base == 2) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', true)
-    elseif(optional_civilian_base == 3) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base_2', false)
-    end
-    
-    --Civilian Defenses
-    if(optional_civilian_defenses == 2) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
-    elseif(optional_civilian_defenses == 3) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', true)
-    elseif(optional_civilian_defenses == 4) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', true)
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', true)
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_4', true)
-    elseif(optional_civilian_defenses == 5) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
-    elseif(optional_civilian_defenses == 6) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', false)
-    elseif(optional_civilian_defenses == 7) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_2', false)
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_3', false)
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defenses_4', false)
     end]]
     
     --Jamming
     if jamming == 2 then
         ScenarioUtils.CreateArmyGroup('ARMY_17', 'Jamming', false)
     end
+end
 
 
 ------------------------------------------------------------------------
@@ -234,16 +237,16 @@ function OptionalUnits()
 function ScenarioUtils.CreateResources()
     LOG("ADAPTIVE: Create Resources:")
     LOG("ADAPTIVE: dynamic_spawn = ", dynamic_spawn)
-    -- LOG("ADAPTIVE: crazyrush_mexes = ", crazyrush_mexes)
-    -- LOG("ADAPTIVE: core_mexes = ", core_mexes)
-    -- LOG("ADAPTIVE: extra_mexes = ", extra_mexes)
-    -- LOG("ADAPTIVE: additional_hydros = ", additional_hydros)
-    -- LOG("ADAPTIVE: middle_mexes = ", middle_mexes)
-    -- LOG("ADAPTIVE: side_mexes = ", side_mexes)
-    -- LOG("ADAPTIVE: underwater_mexes = ", underwater_mexes)
-    -- LOG("ADAPTIVE: back_mexes = ", back_mexes)
-    -- LOG("ADAPTIVE: island_mexes = ", island_mexes)
-    -- LOG("ADAPTIVE: additional_mexes = ", additional_mexes)
+    LOG("ADAPTIVE: crazyrush_mexes = ", crazyrush_mexes)
+    LOG("ADAPTIVE: additional_hydros = ", additional_hydros)
+    LOG("ADAPTIVE: extra_mexes = ", extra_mexes)
+    LOG("ADAPTIVE: middle_mexes = ", middle_mexes)
+    LOG("ADAPTIVE: side_mexes = ", side_mexes)
+    LOG("ADAPTIVE: underwater_mexes = ", underwater_mexes)
+    LOG("ADAPTIVE: island_mexes = ", island_mexes)
+    LOG("ADAPTIVE: core_mexes = ", core_mexes)
+    LOG("ADAPTIVE: base_mexes = ", base_mexes)
+    LOG("ADAPTIVE: expansion_mexes = ", expansion_mexes)
     
     --get map markers
     local markers = ScenarioUtils.GetMarkers();
@@ -253,16 +256,16 @@ function ScenarioUtils.CreateResources()
     local spwnMexArmy = Tables.spwnMexArmy or {}
     local spwnHydroArmy = Tables.spwnHydroArmy or {}
     local additionalHydros = Tables.additionalHydros or {}
+    local extraMexes = Tables.extraMexes or {}
     local middleMexes = Tables.middleMexes or {}
     local sideMexes = Tables.sideMexes or {}
     local underwaterMexes = Tables.underwaterMexes or {}
     local islandMexes = Tables.islandMexes or {}
-    local backMexes = Tables.backMexes or {}
-    local crazyrushOneMexes = Tables.crazyrushOneMexes or {}
-    local forwardCrazyrushMexes = Tables.forwardCrazyrushMexes or {}
-    local additionalMexes = Tables.additionalMexes or {}
     local coreMexes = Tables.coreMexes or {}
-    local extraMexes = Tables.extraMexes or {}
+    local baseMexes = Tables.baseMexes or {}
+    local expansionMexes = Tables.expansionMexes or {}
+    local forwardCrazyrushMexes = Tables.forwardCrazyrushMexes or {}
+    local crazyrushOneMexes = Tables.crazyrushOneMexes or {}
 
     --find out if there are spots that do not have a mirror
     --in that case store the pair in the list with false
@@ -324,28 +327,28 @@ function ScenarioUtils.CreateResources()
         end
         
     --FIX SETUP FOR X PLAYER
-    --2v2 setup armys 1-4 (remove 5-16)
+    --2v2 setup armys 1 - 4 (remove 5 - maxPlayerOnMap)
     elseif(dynamic_spawn == 3) then
-        for m = 5, 16 do
+        for m = 5, maxPlayerOnMap do
             Notpresentarmies[numberOfNotPresentArmies] = m;
             numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
         end
         
-    --4v4 setup, armys 1-8 (remove 9-16)
+    --4v4 setup, armys 1 - 8 (remove 9 - maxPlayerOnMap)
     elseif(dynamic_spawn == 4) then
-        for m = 9, 16 do
+        for m = 9, maxPlayerOnMap do
             Notpresentarmies[numberOfNotPresentArmies] = m;
             numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
         end
         
-    --6v6 setup, army 1-12 (remove 13-16)
+    --6v6 setup, army 1 - 12 (remove 13 - maxPlayerOnMap)
     elseif(dynamic_spawn == 5) then
-        for m = 13, 16 do
+        for m = 13, maxPlayerOnMap do
             Notpresentarmies[numberOfNotPresentArmies] = m;
             numberOfNotPresentArmies = numberOfNotPresentArmies + 1;
         end
         
-    --8v8 setup, armies 1-16 (remove none)
+    --8v8 setup, armies 1 - maxPlayerOnMap (remove none)
     elseif(dynamic_spawn == 6) then
         Notpresentarmies = {};
     end
@@ -369,39 +372,42 @@ function ScenarioUtils.CreateResources()
                 doit=FalseIfInList(name, spwnHydroArmy[armynumber], HydroString, doit);
             end
 
-            if(additional_hydros == 1) then
-                doit=FalseIfInList(name, additionalHydros, HydroString, doit);
-            end
-            for l = 1, middle_mexes - 1   do
-                doit=FalseIfInList(name, middleMexes[l], MassString, doit);
-            end
-            for l = 1, side_mexes - 1  do
-                doit=FalseIfInList(name, sideMexes[l], MassString, doit);
-            end
-            for l = 1, underwater_mexes - 1  do
-                doit=FalseIfInList(name, underwaterMexes[l], MassString, doit);
-            end
-            for l = 1, back_mexes - 1  do
-                doit=FalseIfInList(name, backMexes[l], MassString, doit);
-            end
-            for l = 1, island_mexes - 1  do
-                doit=FalseIfInList(name, islandMexes[l], MassString, doit);
-            end
-
-            if(additional_mexes == 1) then
-                doit = FalseIfInList(name, additionalMexes, MassString, doit)
+            for e = 1, additional_hydros - 1 do
+                doit=FalseIfInList(name, additionalHydros[e], HydroString, doit);
             end
             
-            --remove "coreMexes"
-            for e = 1, core_mexes - 1  do
+            for e = 1, extra_mexes - 1 do
+                doit=FalseIfInList(name, extraMexes[e], MassString, doit);
+                --LOG("ADAPTIVE: removing extraMexes")
+            end
+            
+            for e = 1, middle_mexes - 1 do
+                doit=FalseIfInList(name, middleMexes[e], MassString, doit);
+            end
+            
+            for e = 1, side_mexes - 1 do
+                doit=FalseIfInList(name, sideMexes[e], MassString, doit);
+            end
+            
+            for e = 1, underwater_mexes - 1 do
+                doit=FalseIfInList(name, underwaterMexes[e], MassString, doit);
+            end
+            
+            for e = 1, island_mexes - 1 do
+                doit=FalseIfInList(name, islandMexes[e], MassString, doit);
+            end
+
+            for e = 1, core_mexes - 1 do
                 doit=FalseIfInList(name, coreMexes[e], MassString, doit);
                 --LOG("ADAPTIVE: removing coreMexes")
             end
             
-            --remove "extraMexes"
-            for e = 1, extra_mexes - 1  do
-                doit=FalseIfInList(name, extraMexes[e], MassString, doit);
-                --LOG("ADAPTIVE: removing extraMexes")
+            for e = 1, base_mexes - 1 do
+                doit=FalseIfInList(name, baseMexes, MassString, doit)
+            end
+            
+            for e = 1, expansion_mexes - 1 do
+                doit=FalseIfInList(name, expansionMexes[e], MassString, doit);
             end
             
             --FalseIfNotInList = ONLY USE MARKER IN LIST
@@ -429,6 +435,10 @@ function ScenarioUtils.CreateResources()
 end
 
 function MassString(_mexname)
+    if type(_mexname) == 'string' then
+        return "Mass " .. _mexname;
+    end
+    
     if(_mexname > 9) then
         return "Mass " .. _mexname;
     else
@@ -437,6 +447,10 @@ function MassString(_mexname)
 end
 
 function HydroString(_hydroname)
+    if type(_hydroname) == 'string' then
+        return "Hydrocarbon " .. _hydroname;
+    end
+    
     if(_hydroname > 9) then
         return "Hydrocarbon " .. _hydroname;
     else
@@ -492,8 +506,8 @@ function spawnresource(Position,restype, spawnhpr)
         size, size,              # SizeX/Z
         lod,                     # LOD
         0,                       # Duration (0 == does not expire)
-        -1,                      # army (-1 == not owned by any single army)
-        0                        # ???
+        -1,                      # Army (-1 == not owned by any single army)
+        0                        # Fidelity
     );
 end
 
@@ -503,8 +517,8 @@ end
 ------------------------------------------------------------------------
 function showmessage()
     local message = ''
-    local mexsidetop = ScenarioInfo.Options.mexsidetop or 1
-    local mexsidebot = ScenarioInfo.Options.mexsidebot or 1
+    local mexsidetop = ScenarioInfo.Options.mexsidetop or 1 --not in options?
+    local mexsidebot = ScenarioInfo.Options.mexsidebot or 1 --not in options?
     local sendmessage = false
 
     if mexsidebot != mexsidetop then
@@ -895,7 +909,7 @@ end
 ------------------------------------------------------------------------
 ------Faction dependent reclaim-----------------------------------------
 ------------------------------------------------------------------------
-function AddFactionReclaimBack(optional_reclaim_back)
+function AddFactionReclaimBack(optional_adaptive_faction_wreckage)
     local SpawnReclaimArmy7 = false
     local SpawnReclaimArmy8 = false
     local armyTable = ListArmies()
@@ -904,13 +918,13 @@ function AddFactionReclaimBack(optional_reclaim_back)
             if(GetArmyBrain(army):GetFactionIndex() == 1 or GetArmyBrain(army):GetFactionIndex() == 2) then
                 SpawnReclaimArmy7 = true
                 ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Top_UEF_2', true)
-                if(optional_reclaim_back == 3) then
+                if(optional_adaptive_faction_wreckage == 3) then
                     ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Top_UEF_3', true)
                 end
             else
                 SpawnReclaimArmy7 = true
                 ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Top_Cybran_2', true)
-                if(optional_reclaim_back == 3) then
+                if(optional_adaptive_faction_wreckage == 3) then
                     ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Top_Cybran_3', true)
                 end
             end
@@ -919,13 +933,13 @@ function AddFactionReclaimBack(optional_reclaim_back)
             if(GetArmyBrain(army):GetFactionIndex() == 1 or GetArmyBrain(army):GetFactionIndex() == 2) then
                 SpawnReclaimArmy8 = true
                 ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Bot_UEF_2', true)
-                if(optional_reclaim_back == 3) then
+                if(optional_adaptive_faction_wreckage == 3) then
                     ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Bot_UEF_3', true)
                 end
             else
                 SpawnReclaimArmy8 = true
                 ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Bot_Cybran_2', true)
-                if(optional_reclaim_back == 3) then
+                if(optional_adaptive_faction_wreckage == 3) then
                     ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Bot_Cybran_3', true)
                 end
             end
@@ -933,12 +947,12 @@ function AddFactionReclaimBack(optional_reclaim_back)
     end
     if(SpawnReclaimArmy8 and not SpawnReclaimArmy7) then
         ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Top_Cybran_2', true)
-        if(optional_reclaim_back == 3) then
+        if(optional_adaptive_faction_wreckage == 3) then
             ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Top_Cybran_3', true)
         end
     elseif (not SpawnReclaimArmy8 and SpawnReclaimArmy7) then
         ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Bot_UEF_2', true)
-        if(optional_reclaim_back == 3) then
+        if(optional_adaptive_faction_wreckage == 3) then
             ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Back_Bot_UEF_3', true)
         end
     end
