@@ -7,12 +7,26 @@ options ={
     key = 'dynamic_spawn',
     pref = 'dynamic_spawn',
     values = {
-        { text = "mirror slots", help = "Spawn resources for player & mirror slot.", key = 1, },
-        { text = "used slots", help = "Spawn resources for player on used slots.", key = 2, },
-        { text = "2v2 setup", help = "Don't adjust for player & spawn resources for 2v2.", key = 3, },
-        { text = "4v4 setup", help = "Don't adjust for player & spawn resources for 4v4.", key = 4, },
-        { text = "6v6 setup", help = "Don't adjust for player & spawn resources for 6v6.", key = 5, },
-        { text = "8v8 setup", help = "Don't adjust for player & spawn resources for maximum player count.", key = 6, },
+        { text = "mirror slots", help = "Spawn resources for player & mirror slot (balanced resources).", key = 1, },
+        { text = "used slots", help = "Spawn resources for player only on used slots (unbalanced resources).", key = 2, },
+        -- { text = "2v2 setup", help = "Don't adjust for player & spawn resources for 2v2.", key = 3, },
+        -- { text = "4v4 setup", help = "Don't adjust for player & spawn resources for 4v4.", key = 4, },
+        -- { text = "6v6 setup", help = "Don't adjust for player & spawn resources for 6v6.", key = 5, },
+        -- { text = "8v8 setup", help = "Don't adjust for player & spawn resources for maximum player count.", key = 6, },
+    },
+},
+
+{
+    default = 1,
+    label = "Crazyrush",
+    help = "Activate different types of crazyrush* for the spawned mexes. *Building a mex on a mass point will always create new adjacent mass points to build on.",
+    key = 'crazyrush_mexes',
+    pref = 'crazyrush_mexes',
+    values = {
+        { text = "disabled", help = "No crazyrush.", key = 1, },
+        -- { text = "crazyrush forward mexes", help = "Activate crazyrush only for the 4 center mexes. All other mexes will behave normally.", key = 2, },
+        -- { text = "crazyrush 1 core mex", help = "Activate crazyrush & spawn only 1 core mex per active slot.", key = 3, },
+        { text = "crazyrush", help = "Activate crazyrush for all spawned mexes.", key = 4, },
     },
 },
 
@@ -65,20 +79,6 @@ options ={
 
 {
     default = 1,
-    label = "Crazyrush",
-    help = "Activate different types of crazyrush* for the spawned mexes. *Building a mex on a mass point will always create new adjacent mass points to build on.",
-    key = 'crazyrush_mexes',
-    pref = 'crazyrush_mexes',
-    values = {
-        { text = "disabled", help = "No crazyrush.", key = 1, },
-        { text = "crazyrush forward mexes", help = "Activate crazyrush only for the 4 center mexes. All other mexes will behave normally.", key = 2, },
-        { text = "crazyrush 1 core mex", help = "Activate crazyrush & spawn only 1 core mex per active slot.", key = 3, },
-        { text = "crazyrush", help = "Activate crazyrush for all spawned mexes.", key = 4, },
-    },
-},
-
-{
-    default = 1,
     label = "number middle mexes",
     help = "configure the amount of mexes in the middle region of the map.",
     key = 'middle_mexes',
@@ -91,7 +91,7 @@ options ={
 },
 
 {
-    default = 3,
+    default = 1,
     label = "number side mexes",
     help = "configure the amount of mexes on the sides of the map (behind the rock position).",
     key = 'side_mexes',
@@ -122,8 +122,8 @@ options ={
     default = 1,
     label = "airplayer expansion mex",
     help = "configure the amount of mexes on the expansion of the air player.",
-    key = 'back_mexes',
-    pref = 'back_mexes',
+    key = 'expansion_mexes',
+    pref = 'expansion_mexes',
     values = {
         { text = "enabled - 3 mex", help = "Spawn 3 mexes in the central region of the landmass between the front and air position.", key = 1, },
         { text = "enabled - 2 mex", help = "Spawn 2 mexes in the central region of the landmass between the front and air position.", key = 2, },
@@ -133,7 +133,7 @@ options ={
 },
 
 {
-    default = 5,
+    default = 1,
     label = "additional underwater mexes",
     help = "additional side_mexes in both oceans.",
     key = 'underwater_mexes',
@@ -166,11 +166,11 @@ options ={
 },
 
 {
-    default = 4,
+    default = 1,
     label = "reclaim - middle",
     help = "add wrecks to the middle of the map",
-    key = 'optional_reclaim_middle',
-    pref = 'optional_reclaim_middle',
+    key = 'optional_wreckage_middle',
+    pref = 'optional_wreckage_middle',
     values = {
         { text = "no reclaim", help = "Do not add additional reclaim to the middle.", key = 1, },
         { text = "some reclaim", help = "Add a some t2 units to the middle of the map.", key = 2, },
@@ -185,8 +185,8 @@ options ={
     default = 1,
     label = "reclaim - back",
     help = "add t2 pgen wrecks to the air rear air position of the map. The faction of these pgens is either UEF or Cybran depending on the player.",
-    key = 'optional_reclaim_back',
-    pref = 'optional_reclaim_back',
+    key = 'optional_adaptive_faction_wreckage',
+    pref = 'optional_adaptive_faction_wreckage',
     values = {
         { text = "no reclaim", help = "Do not add additional reclaim to the back position.", key = 1, },
         { text = "one t2 pgen", help = "Add one t2 pgen wreck with the same faction as the air player to the back position.", key = 2, },
@@ -195,7 +195,7 @@ options ={
 },
 
 {
-    default = 2,
+    default = 1,
     label = "Civilian Base",
     help = "Spawn civilian base in the middle of the map.",
     key = 'optional_civilian_base',
@@ -208,7 +208,7 @@ options ={
 },
 
 {
-    default = 2,
+    default = 1,
     label = "Civilian Defenses",
     help = "Spawn civilian defenses at the middle plateau.",
     key = 'optional_civilian_defenses',
@@ -225,7 +225,7 @@ options ={
 },
 
 {
-    default = 2,
+    default = 1,
     label = "Wreckage",
     help = "Scale amount of unit wrecks.",
     key = 'optional_wreckage',
@@ -240,7 +240,7 @@ options ={
 },
 
 {
-    default = 2,
+    default = 1,
     label = "Naval Wreckage",
     help = "Scale amount of naval unit wrecks.",
     key = 'optional_naval_wreckage',
@@ -255,10 +255,10 @@ options ={
 
 {
     default = 1,
-    label = "additional mexes",
+    label = "additional base mexes",
     help = "Spawns one additional mex for each present player in the starting base.",
-    key = 'additional_mexes',
-    pref = 'additional_mexes',
+    key = 'base_mexes',
+    pref = 'base_mexes',
     values = {
         { text = "disabled", help = "Spawn the usual ressources.", key = 1, },
         { text = "enabled", help = "Spawns one additional mex per player.", key = 2, },
@@ -279,7 +279,7 @@ options ={
 },
 
 {
-    default = 2,
+    default = 1,
     label = "Extra Mexes",
     help = "Spawn 4 additional mexes at the map center.",
     key = 'extra_mexes',
