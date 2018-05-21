@@ -47,34 +47,35 @@ spwnHydroArmy ={    {},
 
 
 
--- SCALING OPTIONS
+-- GENERAL SCALING OPTIONS
+-- exampleMexes = {{5,6},{3,4},{1,2}},        -- exampleMexes = {{'1,2'}}
 -- exampleMexes = {{'c'},{'b'},{'a'}},        -- exampleMexes = {{'a'}}
     -- option key=1 (e=0): spawn a+b+c            -- option key=1 (e=0): spawn a
     -- option key=2 (e=1): spawn a+b, c off        -- option key=2 (e=1): a off
     -- option key=3 (e=2): spawn a, b+c off
     -- option key=4 (e=3): a+b+c off
 
--- table for the "additional hydro" option
-additionalHydros = {}
+-- add hydros to the map
+additionalHydros = {{}}
 
+-- add extra mexes to the map
+extraMexes = {{}}
+
+-- add mexes to certain map positions
 middleMexes = {{},{}}
-
 sideMexes = {{},{}}
-
 underwaterMexes = {{},{}}
-
 islandMexes ={{},{}}
 
-backMexes = {{},{}}
-
--- add mexes in this table also to the corresponding player (allows to increase the mex count in the starting base)
-additionalMexes = {}
-
--- add core mexes (refers to spwnMexArmy)
+-- STARTING BASE OPTIONS (refers to spwnMexArmy)
+-- add core mexes 
 coreMexes = {{}}
 
--- add extra mexes
-extraMexes = {{}}
+-- add mexes to starting base (further away from coreMexes)
+baseMexes = {{}}
+
+-- configure the amount of mexes on the expansion of the air player
+expansionMexes = {{},{}}
 
 
 
