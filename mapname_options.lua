@@ -8,11 +8,12 @@ options ={
     pref = 'dynamic_spawn',
     values = {
         { text = "mirror slots", help = "Spawn resources for player & mirror slot (balanced resources).", key = 1, },
-        { text = "used slots", help = "Spawn resources for player only on used slots (unbalanced resources).", key = 2, },
-        -- { text = "2v2 setup", help = "Don't adjust for player & spawn resources for 2v2.", key = 3, },
-        -- { text = "4v4 setup", help = "Don't adjust for player & spawn resources for 4v4.", key = 4, },
-        -- { text = "6v6 setup", help = "Don't adjust for player & spawn resources for 6v6.", key = 5, },
-        -- { text = "8v8 setup", help = "Don't adjust for player & spawn resources for maximum player count.", key = 6, },
+        { text = "used slots", help = "Only spawn resources for player on used slots (unbalanced resources).", key = 2, },
+		{ text = "no mirror player = no resources", help = "Only spawn resources if mirror slot is also occupied by a player (not recommended, but it can make uneven matches fairer).", key = 3, },
+        -- { text = "2v2 setup", help = "Don't adjust for player & spawn resources for 2v2.", key = 4, },
+        -- { text = "4v4 setup", help = "Don't adjust for player & spawn resources for 4v4.", key = 5, },
+        -- { text = "6v6 setup", help = "Don't adjust for player & spawn resources for 6v6.", key = 6, },
+        -- { text = "8v8 setup", help = "Don't adjust for player & spawn resources for maximum player count.", key = 7, },
     },
 },
 
