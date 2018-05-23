@@ -13,15 +13,15 @@ local maxPlayerOnMap = 16
 --resources
 local dynamic_spawn = ScenarioInfo.Options.dynamic_spawn or 1
 local crazyrush_mexes = ScenarioInfo.Options.crazyrush_mexes or 1
-local additional_hydros = ScenarioInfo.Options.additional_hydros or 1
+local extra_hydros = ScenarioInfo.Options.extra_hydros or 1
 local extra_mexes = ScenarioInfo.Options.extra_mexes or 1
 local middle_mexes = ScenarioInfo.Options.middle_mexes or 1
 local side_mexes = ScenarioInfo.Options.side_mexes or 1
 local underwater_mexes = ScenarioInfo.Options.underwater_mexes or 1
 local island_mexes = ScenarioInfo.Options.island_mexes or 1
-local core_mexes = ScenarioInfo.Options.core_mexes or 1
-local base_mexes = ScenarioInfo.Options.base_mexes or 1
 local expansion_mexes = ScenarioInfo.Options.expansion_mexes or 1
+local core_mexes = ScenarioInfo.Options.core_mexes or 1
+local extra_base_mexes = ScenarioInfo.Options.extra_base_mexes or 1
 --units
 local optional_wreckage = ScenarioInfo.Options.optional_wreckage or 1
 local optional_naval_wreckage = ScenarioInfo.Options.optional_naval_wreckage or 1
@@ -61,8 +61,6 @@ end
 --OnStart
 function OnStart()
     LOG("ADAPTIVE: OnStart")
-    --check if a message needs to be displayed
-    ForkThread(showmessage)
     
     --activate the map expansion code
     --ScenarioFramework.SetPlayableArea('AREA_4' , false)
@@ -73,9 +71,12 @@ function OnStart()
     --set color for civilians
     --SetArmyColor('ARMY_17',245,203,150)
     
+    --can be used to notify about intentionally uneven mexes on the map, e.g. "Adaptive Wonder Open"
+    ForkThread(showmessage)
+    
     ForkThread(startCrazyrushLoop)
     
-    startGrowingTreesLoop()
+    ForkThread(startGrowingTreesLoop)
     
     ForkThread(gatherFeedback)
 end
@@ -238,15 +239,15 @@ function ScenarioUtils.CreateResources()
     LOG("ADAPTIVE: Create Resources:")
     LOG("ADAPTIVE: dynamic_spawn = ", dynamic_spawn)
     LOG("ADAPTIVE: crazyrush_mexes = ", crazyrush_mexes)
-    LOG("ADAPTIVE: additional_hydros = ", additional_hydros)
+    LOG("ADAPTIVE: extra_hydros = ", extra_hydros)
     LOG("ADAPTIVE: extra_mexes = ", extra_mexes)
     LOG("ADAPTIVE: middle_mexes = ", middle_mexes)
     LOG("ADAPTIVE: side_mexes = ", side_mexes)
     LOG("ADAPTIVE: underwater_mexes = ", underwater_mexes)
     LOG("ADAPTIVE: island_mexes = ", island_mexes)
-    LOG("ADAPTIVE: core_mexes = ", core_mexes)
-    LOG("ADAPTIVE: base_mexes = ", base_mexes)
     LOG("ADAPTIVE: expansion_mexes = ", expansion_mexes)
+    LOG("ADAPTIVE: core_mexes = ", core_mexes)
+    LOG("ADAPTIVE: extra_base_mexes = ", extra_base_mexes)
     
     --get map markers
     local markers = ScenarioUtils.GetMarkers();
@@ -255,15 +256,15 @@ function ScenarioUtils.CreateResources()
     --it is sorted in such a way that the first line corresponds to player one, the second to player 2 and so on...
     local spwnMexArmy = Tables.spwnMexArmy or {}
     local spwnHydroArmy = Tables.spwnHydroArmy or {}
-    local additionalHydros = Tables.additionalHydros or {}
+    local extraHydros = Tables.extraHydros or {}
     local extraMexes = Tables.extraMexes or {}
     local middleMexes = Tables.middleMexes or {}
     local sideMexes = Tables.sideMexes or {}
     local underwaterMexes = Tables.underwaterMexes or {}
     local islandMexes = Tables.islandMexes or {}
-    local coreMexes = Tables.coreMexes or {}
-    local baseMexes = Tables.baseMexes or {}
     local expansionMexes = Tables.expansionMexes or {}
+    local coreMexes = Tables.coreMexes or {}
+    local extraBaseMexes = Tables.extraBaseMexes or {}
     local forwardCrazyrushMexes = Tables.forwardCrazyrushMexes or {}
     local crazyrushOneMexes = Tables.crazyrushOneMexes or {}
 
@@ -395,42 +396,46 @@ function ScenarioUtils.CreateResources()
                 doit=FalseIfInList(name, spwnHydroArmy[armynumber], HydroString, doit);
             end
 
-            for e = 1, additional_hydros - 1 do
-                doit=FalseIfInList(name, additionalHydros[e], HydroString, doit);
+            for e = extra_hydros, table.getn(extraHydros) do
+                doit=FalseIfInList(name, extraHydros[e], HydroString, doit);
             end
             
-            for e = 1, extra_mexes - 1 do
+            --LOG("ADAPTIVE: extraMexes table items = ", table.getn(extraMexes))
+            for e = extra_mexes, table.getn(extraMexes) do
                 doit=FalseIfInList(name, extraMexes[e], MassString, doit);
                 --LOG("ADAPTIVE: removing extraMexes")
             end
             
-            for e = 1, middle_mexes - 1 do
+            --LOG("ADAPTIVE: middleMexes table items = ", table.getn(middleMexes))
+            for e = middle_mexes, table.getn(middleMexes) do
                 doit=FalseIfInList(name, middleMexes[e], MassString, doit);
+                --LOG("ADAPTIVE: removing middleMexes")
             end
             
-            for e = 1, side_mexes - 1 do
+            for e = side_mexes, table.getn(sideMexes) do
                 doit=FalseIfInList(name, sideMexes[e], MassString, doit);
             end
             
-            for e = 1, underwater_mexes - 1 do
+            for e = underwater_mexes, table.getn(underwaterMexes) do
                 doit=FalseIfInList(name, underwaterMexes[e], MassString, doit);
             end
             
-            for e = 1, island_mexes - 1 do
+            for e = island_mexes, table.getn(islandMexes) do
                 doit=FalseIfInList(name, islandMexes[e], MassString, doit);
             end
-
-            for e = 1, core_mexes - 1 do
+            
+            for e = expansion_mexes, table.getn(expansionMexes) do
+                doit=FalseIfInList(name, expansionMexes[e], MassString, doit);
+            end
+            
+            --LOG("ADAPTIVE: coreMexes table items = ", table.getn(coreMexes))
+            for e = core_mexes, table.getn(coreMexes) do
                 doit=FalseIfInList(name, coreMexes[e], MassString, doit);
                 --LOG("ADAPTIVE: removing coreMexes")
             end
             
-            for e = 1, base_mexes - 1 do
-                doit=FalseIfInList(name, baseMexes[e], MassString, doit)
-            end
-            
-            for e = 1, expansion_mexes - 1 do
-                doit=FalseIfInList(name, expansionMexes[e], MassString, doit);
+            for e = extra_base_mexes, table.getn(extraBaseMexes) do
+                doit=FalseIfInList(name, extraBaseMexes[e], MassString, doit)
             end
             
             --FalseIfNotInList = ONLY USE MARKER IN LIST
@@ -540,11 +545,11 @@ end
 ------------------------------------------------------------------------
 function showmessage()
     local message = ''
-    local mexsidetop = ScenarioInfo.Options.mexsidetop or 1 --not in options?
-    local mexsidebot = ScenarioInfo.Options.mexsidebot or 1 --not in options?
+    local top_side_mexes = ScenarioInfo.Options.top_side_mexes or 1
+    local bottom_side_mexes = ScenarioInfo.Options.bottom_side_mexes or 1
     local sendmessage = false
 
-    if mexsidebot != mexsidetop then
+    if bottom_side_mexes != top_side_mexes then
         message = message .. 'There is a difference in the number of mexes between the bottom left corner and the top right corner.'
 
         for k = 1, 4 do
@@ -780,7 +785,7 @@ end
 function Expand_StartupCheck()
 --check if a player is outside of the starting area and expand the map in that case
     ScenarioInfo.MapAlreadyExpanded = false
-    LOG("ADAPTIVE: Activate map expansion script. Setting = ", expand_map)
+    LOG("ADAPTIVE: Activate map expansion script. expand_map = ", expand_map)
 
     for m = 13, 14 do
         armystring = "ARMY_" .. m
