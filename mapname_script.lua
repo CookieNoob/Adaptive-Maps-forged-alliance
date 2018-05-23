@@ -787,7 +787,7 @@ function Expand_StartupCheck()
     ScenarioInfo.MapAlreadyExpanded = false
     LOG("ADAPTIVE: Activate map expansion script. expand_map = ", expand_map)
 
-    for m = 13, 14 do
+    --[[for m = 13, 14 do
         armystring = "ARMY_" .. m
         for _, army in ListArmies() do
             if army == armystring then
@@ -796,7 +796,7 @@ function Expand_StartupCheck()
                 return false
             end
         end
-    end
+    end]]
     if expand_map == 1 then
         return false
     end
