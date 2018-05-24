@@ -214,7 +214,7 @@ function OptionalUnits()
             armystring = "ARMY_" .. m
             for _, army in ListArmies() do
                 if( army == armystring) then
-                    LOG("ADAPTIVE: found player in civ base. remove civs")
+                    LOG("ADAPTIVE: found player in civilian base. remove civilians")
                     spawncivs = false
                 end
             end
@@ -400,16 +400,12 @@ function ScenarioUtils.CreateResources()
                 doit=FalseIfInList(name, extraHydros[e], HydroString, doit);
             end
             
-            --LOG("ADAPTIVE: extraMexes table items = ", table.getn(extraMexes))
             for e = extra_mexes, table.getn(extraMexes) do
                 doit=FalseIfInList(name, extraMexes[e], MassString, doit);
-                --LOG("ADAPTIVE: removing extraMexes")
             end
             
-            --LOG("ADAPTIVE: middleMexes table items = ", table.getn(middleMexes))
             for e = middle_mexes, table.getn(middleMexes) do
                 doit=FalseIfInList(name, middleMexes[e], MassString, doit);
-                --LOG("ADAPTIVE: removing middleMexes")
             end
             
             for e = side_mexes, table.getn(sideMexes) do
@@ -428,10 +424,8 @@ function ScenarioUtils.CreateResources()
                 doit=FalseIfInList(name, expansionMexes[e], MassString, doit);
             end
             
-            --LOG("ADAPTIVE: coreMexes table items = ", table.getn(coreMexes))
             for e = core_mexes, table.getn(coreMexes) do
                 doit=FalseIfInList(name, coreMexes[e], MassString, doit);
-                --LOG("ADAPTIVE: removing coreMexes")
             end
             
             for e = extra_base_mexes, table.getn(extraBaseMexes) do
@@ -442,7 +436,6 @@ function ScenarioUtils.CreateResources()
             --use only "crazyrushOneMexes"
             if crazyrush_mexes == 3 then
                 doit = FalseIfNotInList(name, crazyrushOneMexes, MassString, doit);
-                --LOG("ADAPTIVE: only crazyrushOneMexes")
             end
         end
 
@@ -505,7 +498,7 @@ function FalseIfNotInList(name, list, string_function, _doit)
 end
 
 function spawnresource(Position,restype, spawnhpr)
-    -- check type of resource and set parameters
+    --check type of resource and set parameters
     local bp, albedo, size, lod;
     if restype == "Mass" then
         albedo = "/env/common/splats/mass_marker.dds";
@@ -519,14 +512,14 @@ function spawnresource(Position,restype, spawnhpr)
         lod = 200;
     end
     
-    -- create the resource
+    --create the resource
     CreateResourceDeposit(restype, Position[1], Position[2], Position[3], size/2);
     
-    -- create the resource graphic on the map
+    --create the resource graphic on the map
     if spawnhpr then
         CreatePropHPR(bp, Position[1], Position[2], Position[3], Random(0,360), 0, 0);
     end
-    -- create the resource icon on the map
+    --create the resource icon on the map
     CreateSplat(
         Position,                # Position
         0,                       # Heading (rotation)
@@ -555,7 +548,7 @@ function showmessage()
         for k = 1, 4 do
             local counter = 0
             for _, army in ListArmies() do
---adjust these pairs! They are correct on wonder but maybe not on this map!
+                --adjust these pairs! They are correct on wonder but maybe not on this map!
                 if ((army == 'ARMY_'..(2+k) ) or (army == 'ARMY_'..(11-k))) then
                     counter = counter + 1
                 end
@@ -572,7 +565,7 @@ function showmessage()
         for k = 1, 2 do
             local counter = 0
             for _, army in ListArmies() do
---adjust these pairs! They are correct on wonder but maybe not on this map!
+                --adjust these pairs! They are correct on wonder but maybe not on this map!
                 if ((army == 'ARMY_'..(11+2*k) ) or (army == 'ARMY_'..(18-2*k))) then
                     counter = counter + 1
                 end
@@ -783,7 +776,7 @@ function Expand_CountMexMarkersInArea(area)
 end
 
 function Expand_StartupCheck()
---check if a player is outside of the starting area and expand the map in that case
+    --check if a player is outside of the starting area and expand the map in that case
     ScenarioInfo.MapAlreadyExpanded = false
     LOG("ADAPTIVE: Activate map expansion script. expand_map = ", expand_map)
 
