@@ -1,4 +1,4 @@
--- table of which ressources belong to which player, it is sorted in such a way that the first line 
+-- table of which resources belong to which player, it is sorted in such a way that the first line 
 -- corresponds to player one, the second to player 2 and so on...
 
 
