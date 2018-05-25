@@ -5,8 +5,8 @@ local ScenarioUtils = import('/lua/sim/ScenarioUtilities.lua')
 local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 local Tables = import('/maps/mapfolder/mapname_tables.lua')
 
---enter maximum possible player count
-local maxPlayerOnMap = 16
+--determine maximum possible player count via table.lua
+local maxPlayerOnMap = Tables.maxPlayerOnMap or 16
 
 --IMPORT: options.lua settings
 --chosen key or default key
