@@ -22,6 +22,8 @@ local island_mexes = ScenarioInfo.Options.island_mexes or 1
 local expansion_mexes = ScenarioInfo.Options.expansion_mexes or 1
 local core_mexes = ScenarioInfo.Options.core_mexes or 1
 local extra_base_mexes = ScenarioInfo.Options.extra_base_mexes or 1
+local top_side_mexes = ScenarioInfo.Options.top_side_mexes or 1
+local bottom_side_mexes = ScenarioInfo.Options.bottom_side_mexes or 1
 --units
 local optional_wreckage = ScenarioInfo.Options.optional_wreckage or 1
 local optional_naval_wreckage = ScenarioInfo.Options.optional_naval_wreckage or 1
@@ -248,6 +250,8 @@ function ScenarioUtils.CreateResources()
     LOG("ADAPTIVE: expansion_mexes = ", expansion_mexes)
     LOG("ADAPTIVE: core_mexes = ", core_mexes)
     LOG("ADAPTIVE: extra_base_mexes = ", extra_base_mexes)
+    LOG("ADAPTIVE: top_side_mexes = ", top_side_mexes)
+    LOG("ADAPTIVE: bottom_side_mexes = ", bottom_side_mexes)
     
     --get map markers
     local markers = ScenarioUtils.GetMarkers();
@@ -265,6 +269,8 @@ function ScenarioUtils.CreateResources()
     local expansionMexes = Tables.expansionMexes or {}
     local coreMexes = Tables.coreMexes or {}
     local extraBaseMexes = Tables.extraBaseMexes or {}
+    local topSideMexes = Tables.topSideMexes or {}
+    local bottomSideMexes = Tables.bottomSideMexes or {}
     local forwardCrazyrushMexes = Tables.forwardCrazyrushMexes or {}
     local crazyrushOneMexes = Tables.crazyrushOneMexes or {}
 
@@ -432,6 +438,14 @@ function ScenarioUtils.CreateResources()
                 doit=FalseIfInList(name, extraBaseMexes[e], MassString, doit)
             end
             
+            for e = top_side_mexes, table.getn(topSideMexes) do
+                doit=FalseIfInList(name, topSideMexes[e], MassString, doit)
+            end
+            
+            for e = bottom_side_mexes, table.getn(bottomSideMexes) do
+                doit=FalseIfInList(name, bottomSideMexes[e], MassString, doit)
+            end
+            
             --FalseIfNotInList = ONLY USE MARKER IN LIST
             --use only "crazyrushOneMexes"
             if crazyrush_mexes == 3 then
@@ -538,8 +552,6 @@ end
 ------------------------------------------------------------------------
 function showmessage()
     local message = ''
-    local top_side_mexes = ScenarioInfo.Options.top_side_mexes or 1
-    local bottom_side_mexes = ScenarioInfo.Options.bottom_side_mexes or 1
     local sendmessage = false
 
     if bottom_side_mexes != top_side_mexes then
