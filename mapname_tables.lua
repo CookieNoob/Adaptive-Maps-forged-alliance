@@ -1,4 +1,4 @@
--- table of which ressources belong to which player, it is sorted in such a way that the first line 
+-- table of which resources belong to which player, it is sorted in such a way that the first line 
 -- corresponds to player one, the second to player 2 and so on...
 
 
@@ -46,37 +46,39 @@ spwnHydroArmy ={    {},
                     {}}
 
 
+-- RESOURCE SCALING OPTIONS
+-- exampleMexes = {{1,2},{3,4},{5,6}},        -- exampleMexes = {{1,2}}
+-- exampleMexes = {{a},{b},{c}},              -- exampleMexes = {{a}}
+    -- option key=1 : removes a+b+c               -- option key=1 : removes a
+    -- option key=2 : spawn a, removes b+c        -- option key=2 : spawns a
+    -- option key=3 : spawn a+b, removes c
+    -- option key=4 : spawn a+b+c
 
--- GENERAL SCALING OPTIONS
--- exampleMexes = {{5,6},{3,4},{1,2}},        -- exampleMexes = {{'1,2'}}
--- exampleMexes = {{'c'},{'b'},{'a'}},        -- exampleMexes = {{'a'}}
-    -- option key=1 (e=0): spawn a+b+c            -- option key=1 (e=0): spawn a
-    -- option key=2 (e=1): spawn a+b, c off        -- option key=2 (e=1): a off
-    -- option key=3 (e=2): spawn a, b+c off
-    -- option key=4 (e=3): a+b+c off
-
--- add hydros to the map
-additionalHydros = {{}}
+-- add extra hydros to the map
+extraHydros = {{}}
 
 -- add extra mexes to the map
 extraMexes = {{}}
 
--- add mexes to certain map positions
-middleMexes = {{},{}}
-sideMexes = {{},{}}
-underwaterMexes = {{},{}}
-islandMexes ={{},{}}
+-- configure the amount of mexes at a certain map position
+middleMexes = {{},{},{}}
+sideMexes = {{},{},{}}
+underwaterMexes = {{},{},{}}
+islandMexes ={{},{},{}}
+expansionMexes = {{},{},{}}
 
--- STARTING BASE OPTIONS (refers to spwnMexArmy)
+
+-- BASE RESOURCE SCALING OPTIONS (refers to spwnMexArmy)
 -- add core mexes 
 coreMexes = {{}}
 
 -- add mexes to starting base (further away from coreMexes)
-baseMexes = {{}}
+extraBaseMexes = {{}}
 
--- configure the amount of mexes on the expansion of the air player
-expansionMexes = {{},{}}
 
+-- INTENTIONAL UNEVEN RESOURCE SCALING OPTIONS
+topSideMexes = {{},{},{}}
+bottomSideMexes = {{},{},{}}
 
 
 -- CRAZYRUSH OPTIONS
