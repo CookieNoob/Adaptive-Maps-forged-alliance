@@ -6,7 +6,6 @@ maxPlayerOnMap = 16
 
 
 
-
 -- table of which resources belong to which player, it is sorted in such a way that the first line corresponds to ARMY_1, the second to ARMY_2 and so on...
 -- line number is 10 + armyumber for the mexes in the table
 spwnMexArmy = {     {},
