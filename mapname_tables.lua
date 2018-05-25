@@ -46,7 +46,7 @@ spwnHydroArmy ={    {},
                     {}}
 
 
--- GENERAL SCALING OPTIONS
+-- RESOURCE SCALING OPTIONS
 -- exampleMexes = {{1,2},{3,4},{5,6}},        -- exampleMexes = {{1,2}}
 -- exampleMexes = {{a},{b},{c}},              -- exampleMexes = {{a}}
     -- option key=1 : removes a+b+c               -- option key=1 : removes a
@@ -68,12 +68,17 @@ islandMexes ={{},{},{}}
 expansionMexes = {{},{},{}}
 
 
--- STARTING BASE OPTIONS (refers to spwnMexArmy)
+-- BASE RESOURCE SCALING OPTIONS (refers to spwnMexArmy)
 -- add core mexes 
 coreMexes = {{}}
 
 -- add mexes to starting base (further away from coreMexes)
 extraBaseMexes = {{}}
+
+
+-- INTENTIONAL UNEVEN RESOURCE SCALING OPTIONS
+topSideMexes = {{},{},{}}
+bottomSideMexes = {{},{},{}}
 
 
 -- CRAZYRUSH OPTIONS
