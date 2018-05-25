@@ -1,5 +1,5 @@
--- table of which resources belong to which player, it is sorted in such a way that the first line 
--- corresponds to player one, the second to player 2 and so on...
+-- enter maximum possible player count (army slots) on the map
+maxPlayerOnMap = 16
 
 
 
@@ -7,6 +7,7 @@
 
 
 
+-- table of which resources belong to which player, it is sorted in such a way that the first line corresponds to ARMY_1, the second to ARMY_2 and so on...
 -- line number is 10 + armyumber for the mexes in the table
 spwnMexArmy = {     {},
                     {},
