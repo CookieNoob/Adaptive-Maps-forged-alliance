@@ -1,3 +1,19 @@
+-- This file adds options to the game lobby. There are two types of options in this file
+-- 1) options that will automatically work when you fill out the adaptive map tables for the 
+--    players. These options are enabled by default. Some sub-options require also additional tables
+--    they are deactivated by default, but you can easily activate them by removing the "--" before the
+--    deactivated option.
+-- 2) options that require an additional table to work (or other things). These options start
+--    a bit further down in the file and if you want to use them, just move them above the comment 
+--    section. Dont forget to add the required tables. 
+-- The options are now using the language that is set in the game for the names of the options and
+-- the explanation text. Most options that spawn a specific number of mexes have translations prepared
+-- for up to 9 mex. Just use for example "adaptive_middle_mex_key_7_help" when you want to have the
+-- text for 7 mex. Keep in mind that you also have to adjust the lable, but NOT the key = XX of the option.
+-- If you do not want to use the standard text and write something different, just remove the 
+-- "<LOC adaptive_somethingsomething> the standard text you dont want" part and write your own text.
+-- Obviously this text wont translate and will always show english.
+
 options ={
 
 {
@@ -67,15 +83,20 @@ options ={
 
 
 
---[[
+--[[ 
+-- options in this section require an additional table (or other things). Move them above this line
+-- to use them.
+
 {
     default = 1,
     label = "<LOC adaptive_hydros_label> Extra Hydros",
+	-- the "help" line doesnt have a translation available
     help = "Spawn additional hydros -WHERE-.",
     key = 'extra_hydros',
     pref = 'extra_hydros',
     values = {
         { text = "0", help = "<LOC adaptive_hydros_key_1_help> No extra hydros.", key = 1, },
+		-- except for the first option there are no translations for this option
         { text = "2", help = "Spawn 2 hydros.", key = 2, },
     },
 },
@@ -83,10 +104,12 @@ options ={
 {
     default = 1,
     label = "<LOC adaptive_extra_mex_label> Extra Mexes",
+	-- the "help" line doesnt have a translation available
     help = "Spawn additional mexes -WHERE-.",
     key = 'extra_mexes',
     pref = 'extra_mexes',
     values = {
+		-- there are translations prepared for up to 9 mex.
         { text = "0", help = "<LOC adaptive_extra_mex_key_0_help> No extra mexes.", key = 1, },
         { text = "4", help = "<LOC adaptive_extra_mex_key_4_help> Spawn 4 mexes.", key = 2, },
     },
@@ -99,6 +122,7 @@ options ={
     key = 'middle_mexes',
     pref = 'middle_mexes',
     values = {
+		-- there are translations prepared for up to 9 mex.
         { text = "0", help = "<LOC adaptive_middle_mex_key_0_help> No additional mexes in the middle.", key = 1, }
         { text = "2", help = "<LOC adaptive_middle_mex_key_2_help> Spawn 2 mexes in the middle.", key = 2, },
         { text = "4", help = "<LOC adaptive_middle_mex_key_4_help> Spawn 4 mexes in the middle.", key = 3, },
@@ -113,6 +137,7 @@ options ={
     key = 'side_mexes',
     pref = 'side_mexes',
     values = {
+		-- there are translations prepared for up to 9 mex per side, so 18 mex in total.
         { text = "0", help = "<LOC adaptive_side_mex_key_0_help> No additional mexes at the side.", key = 1, },
         { text = "1", help = "<LOC adaptive_side_mex_key_1_help> Spawn 2 mexes, 1 on each side.", key = 2, },
         { text = "2", help = "<LOC adaptive_side_mex_key_2_help> Spawn 4 mexes, 2 on each side.", key = 3, },
@@ -127,6 +152,7 @@ options ={
     key = 'underwater_mexes',
     pref = 'underwater_mexes',
     values = {
+		-- there are translations prepared for up to 9 mex.
         { text = "0", help = "<LOC adaptive_underwater_mex_key_0> No additional underwater mexes.", key = 1, },
         { text = "2", help = "<LOC adaptive_underwater_mex_key_2> Spawn 2 mexes in the water around the islands.", key = 2, },
         { text = "4", help = "<LOC adaptive_underwater_mex_key_4> Spawn 4 mexes in the water around the islands.", key = 3, },
@@ -141,6 +167,7 @@ options ={
     key = 'island_mexes',
     pref = 'island_mexes',
     values = {
+		-- there are translations prepared for up to 9 mex.
         { text = "0", help = "<LOC adaptive_island_mex_key_0> No additional mexes at the island.", key = 1, },
         { text = "2", help = "<LOC adaptive_island_mex_key_2> Spawn 2 mexes at the island.", key = 2, },
         { text = "4", help = "<LOC adaptive_island_mex_key_4> Spawn 4 mexes at the island.", key = 3, },
@@ -155,6 +182,7 @@ options ={
     key = 'expansion_mexes',
     pref = 'expansion_mexes',
     values = {
+		-- there are translations prepared for up to 9 mex.
         { text = "0", help = "<LOC adaptive_expansion_mex_key_0> No additional expansion mexes.", key = 1, },
         { text = "2", help = "<LOC adaptive_expansion_mex_key_2> Spawn 2 mexes in the expansion.", key = 2, },
         { text = "4", help = "<LOC adaptive_expansion_mex_key_4> Spawn 4 mexes in the expansion.", key = 3, },
@@ -169,6 +197,7 @@ options ={
     key = 'core_mexes',
     pref = 'core_mexes',
     values = {
+		-- there are no additional translations for this option
         { text = "3", help = "<LOC adaptive_core_mex_key_3> Spawn 3 core mexes.", key = 1, },
         { text = "4", help = "<LOC adaptive_core_mex_key_4> Spawn 4 core mexes.", key = 2, },
     },
@@ -181,6 +210,7 @@ options ={
     key = 'extra_base_mexes',
     pref = 'extra_base_mexes',
     values = {
+		-- there are translations prepared for up to 5 mex.
         { text = "0", help = "<LOC adaptive_extra_base_mex_key_0> No extra base mexes.", key = 1, },
         { text = "1", help = "<LOC adaptive_extra_base_mex_key_1> Spawns 1 additional mex per player.", key = 2, },
     },
@@ -312,6 +342,7 @@ options ={
     key = 'top_side_mexes',
     pref = 'top_side_mexes',
     values = {
+		-- there are translations prepared for up to 9 mex.
         { text = "0", help = "<LOC adaptive_top_mex_key_0> No additional mexes on the top side.", key = 1, },
         { text = "2", help = "<LOC adaptive_top_mex_key_2> 2 mex on the top side.", key = 2, },
         { text = "4", help = "<LOC adaptive_top_mex_key_4> 4 mex on the top side.", key = 3, },
@@ -326,6 +357,7 @@ options ={
     key = 'bottom_side_mexes',
     pref = 'bottom_side_mexes',
     values = {
+		-- there are translations prepared for up to 9 mex.
         { text = "0", help = "<LOC adaptive_bottom_mex_key_0> No additional mexes on the bottom side.", key = 1, },
         { text = "2", help = "<LOC adaptive_bottom_mex_key_2> 2 mex on the bottom side.", key = 2, },
         { text = "4", help = "<LOC adaptive_bottom_mex_key_4> 4 mex on the bottom side.", key = 3, },
