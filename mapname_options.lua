@@ -41,7 +41,7 @@ options ={
     pref = 'crazyrush_mexes',
     values = {
         { text = "<LOC adaptive_disabled> disabled", help = "<LOC adaptive_crazyrush_key_1_help> No crazyrush.", key = 1, },
-        -- { text = "<LOC adaptive_crazyrush_key_2_label> crazyrush forward mexes", help = "<LOC adaptive_crazyrush_key_2_help> Activate crazyrush only for the 4 center mexes. All other mexes will behave normally.", key = 2, },
+        -- { text = "<LOC adaptive_crazyrush_key_2_label> crazyrush forward mexes", help = "<LOC adaptive_crazyrush_key_2_help> Activate crazyrush only for some central mexes. All other mexes will behave normally.", key = 2, },
         -- { text = "<LOC adaptive_crazyrush_key_3_label> crazyrush 1 core mex", help = "<LOC adaptive_crazyrush_key_3_help> Activate crazyrush & spawn only 1 core mex per active slot.", key = 3, },
         { text = "<LOC adaptive_crazyrush_key_4_label> crazyrush", help = "<LOC adaptive_crazyrush_key_4_help> Activate crazyrush for all spawned mexes.", key = 4, },
     },
