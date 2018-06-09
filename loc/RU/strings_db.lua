@@ -8132,15 +8132,15 @@ adaptive_dynamic_spawn_key_7_help = "Don't adjust for player & spawn resources f
 adaptive_disabled = "Отключено"
 adaptive_enabled = "Включено"
 
-adaptive_crazyrush_label = "Crazyrush (Крезираш)"
-adaptive_crazyrush_help = "Позволяет создать несколько \"безумных\" мексов на карте. При постройке такого мекса, рядом будут спавнится еще мексы."
-adaptive_crazyrush_key_1_label = "Отключено"
-adaptive_crazyrush_key_2_label = "Передние мексы"
-adaptive_crazyrush_key_2_help = "Activate crazyrush only for some central mexes. All other mexes will behave normally."
-adaptive_crazyrush_key_3_label = "1 Мекс на базе"
-adaptive_crazyrush_key_3_help = "Активирует по 1 \"безумному\" мексу на базе каждого игрока."
+adaptive_crazyrush_label = "Crazyrush"
+adaptive_crazyrush_help = "Активировать Crazyrush мексы на карте. *При постройке такого мекса рядом будут появляться еще такие же экстракторы."
+adaptive_crazyrush_key_1_label = "Отключить Crazyrush"
+adaptive_crazyrush_key_2_label = "Передние мехи Crazyrush."
+adaptive_crazyrush_key_2_help = "Активировать Crazyrush только для центральных экстракторов. Все остальные мехи будут обычными."
+adaptive_crazyrush_key_3_label = "1 мекс Crazyrush на базе."
+adaptive_crazyrush_key_3_help = "Активирует по 1 Crazyrush мексу на базе каждого игрока."
 adaptive_crazyrush_key_4_label = "Все мексы"
-adaptive_crazyrush_key_4_help = "Все мексы на карте становятся \"безумными\"."
+adaptive_crazyrush_key_4_help = "Все мексы на карте становятся Crazyrush."
 
 adaptive_regrowing_label = "Regrowing Trees"
 adaptive_regrowing_help = "Regrow reclaimed/destroyed trees when other trees are nearby. Regrow is faster if more trees are close."
@@ -8326,7 +8326,8 @@ adaptive_civ_def_key_6 = "T3 operational (PD+AA)"
 adaptive_civ_def_key_6_help = "Spawn operational civilian T3 PD & AA in addition to T1 & T2."
 
 adaptive_jamming_label = "Jamming"
-adaptive_jamming_help = "Add a Seraphim jamming crystal to the map center, to create false radar signals."
+adaptive_jamming_help = "Add a Seraphim jamming crystal to the map, to create false radar signals."
+adaptive_jamming_2_help = "Add multiple Seraphim jamming crystal to the map, to create false radar signals."
 
 adaptive_expansion_area_label = "Expand Map Area"
 adaptive_expansion_area_help = "Determines how long the playable area is restricted to the area without islands. This option is takes only affect when no island spots are taken (spots 13,14)."
@@ -8373,5 +8374,11 @@ adaptive_bottom_mex_key_7 = "7 mex on the bottom side."
 adaptive_bottom_mex_key_8 = "8 mex on the bottom side."
 adaptive_bottom_mex_key_9 = "9 mex on the bottom side."
 
-
-
+adaptive_lightning_label = "Lightning"
+adaptive_lightning_help = "Sets the lightning effects of the crystals, these are purely visual and deal no damage to units.",
+adaptive_lightning_key_0_help = "No lightning effects"
+adaptive_lightning_key_1 = "enabled - less"
+adaptive_lightning_key_1_help = "Some lightning, but not so much."
+adaptive_lightning_key_2_help = "Normal lightning settings."
+adaptive_lightning_key_3 = "enabled - more"
+adaptive_lightning_key_3_help = "Lightning storm."

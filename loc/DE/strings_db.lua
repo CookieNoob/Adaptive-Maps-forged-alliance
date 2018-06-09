@@ -8368,7 +8368,8 @@ adaptive_civ_def_key_6 = "T3 funktionsfähig (PD+AA)"
 adaptive_civ_def_key_6_help = "Erstellt funktionsfähige zivile T3 PD & AA, zusätzlich zu T1 & T2."
 
 adaptive_jamming_label = "Jamming"
-adaptive_jamming_help = "Erstellt einen Seraphim-Jamming-Kristall in der Kartenmitte, um das Radarsignal zu stören."
+adaptive_jamming_help = "Erstellt einen Seraphim-Jamming-Kristall, um das Radarsignal mit falschen Signalen zu stören."
+adaptive_jamming_2_help = "Erstellt mehrere Seraphim-Jamming-Kristalle, um das Radarsignal mit falschen Signalen zu stören."
 
 adaptive_expansion_area_label = "Kartenbereich erweitern"
 adaptive_expansion_area_help = "Legt fest wie lange der spielbare Kartenbereich auf Bereiche ohne Inseln beschränkt sein soll. Diese Option wird nur aktiviert, wenn kein Spieler auf der Insel startet (Position 13 & 14)."
@@ -8414,3 +8415,12 @@ adaptive_bottom_mex_key_6 = "6 Masseextraktoren auf der unteren Kartenseite."
 adaptive_bottom_mex_key_7 = "7 Masseextraktoren auf der unteren Kartenseite."
 adaptive_bottom_mex_key_8 = "8 Masseextraktoren auf der unteren Kartenseite."
 adaptive_bottom_mex_key_9 = "9 Masseextraktoren auf der unteren Kartenseite."
+
+adaptive_lightning_label = "Blitze"
+adaptive_lightning_help = "Aktiviert Blitzeffekte an den Kristallen, die Effekte sind nur visuell und fügen Einheiten keinen Schaden zu.",
+adaptive_lightning_key_0_help = "Keine Blitzeffekte."
+adaptive_lightning_key_1 = "Aktiviert - wenige"
+adaptive_lightning_key_1_help = "Einige vereinzelte Blitzeffekte."
+adaptive_lightning_key_2_help = "Normale Einstellung für die Blitzeffekte."
+adaptive_lightning_key_3 = "Aktiviert - viele"
+adaptive_lightning_key_3_help = "Blitzsturm. Die Blitzeffekte tauchen häufig auf."
