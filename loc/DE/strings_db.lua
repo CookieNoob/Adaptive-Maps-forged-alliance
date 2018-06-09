@@ -8351,7 +8351,7 @@ adaptive_civ_base_key_2_help = "Erstellt die zivile Basis als Wrackteile."
 adaptive_civ_base_key_2 = "Funktionsfähig"
 adaptive_civ_base_key_3_help = "Erstellt eine funktionsfähige zivile Basis."
 
-adaptive_civ_def_label = "Zivile Verteidigungen",
+adaptive_civ_def_label = "Zivile Verteidigungen"
 adaptive_civ_def_label = "Erstellt zivile Verteidigungen in der Kartenmitte."
 adaptive_civ_def_key_0_help = "Keine zivilen Verteidigungen."
 adaptive_civ_def_key_1 = "T1 Wrackteile (PD+AA)"
