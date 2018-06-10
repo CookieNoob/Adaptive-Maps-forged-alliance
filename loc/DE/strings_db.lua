@@ -8417,7 +8417,7 @@ adaptive_bottom_mex_key_8 = "8 Masseextraktoren auf der unteren Kartenseite."
 adaptive_bottom_mex_key_9 = "9 Masseextraktoren auf der unteren Kartenseite."
 
 adaptive_lightning_label = "Blitze"
-adaptive_lightning_help = "Aktiviert Blitzeffekte an den Kristallen, die Effekte sind nur visuell und fügen Einheiten keinen Schaden zu.",
+adaptive_lightning_help = "Aktiviert Blitzeffekte an den Kristallen, die Effekte sind nur visuell und fügen Einheiten keinen Schaden zu."
 adaptive_lightning_key_0_help = "Keine Blitzeffekte."
 adaptive_lightning_key_1 = "Aktiviert - wenige"
 adaptive_lightning_key_1_help = "Einige vereinzelte Blitzeffekte."

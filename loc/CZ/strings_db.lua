@@ -8618,7 +8618,7 @@ adaptive_bottom_mex_key_8 = "8 mex on the bottom side."
 adaptive_bottom_mex_key_9 = "9 mex on the bottom side."
 
 adaptive_lightning_label = "Lightning"
-adaptive_lightning_help = "Sets the lightning effects of the crystals, these are purely visual and deal no damage to units.",
+adaptive_lightning_help = "Sets the lightning effects of the crystals, these are purely visual and deal no damage to units."
 adaptive_lightning_key_0_help = "No lightning effects"
 adaptive_lightning_key_1 = "enabled - less"
 adaptive_lightning_key_1_help = "Some lightning, but not so much."
