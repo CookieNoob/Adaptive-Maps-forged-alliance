@@ -6,10 +6,19 @@
 -- 2) options that require an additional table to work (or other things). These options start
 --    a bit further down in the file and if you want to use them, just move them above the comment 
 --    section. Dont forget to add the required tables. 
+
+-- IMPORTANT: If you change the default for the option, make sure to also adjust the script! The default
+--            key values of the options are stored at the top of the script file. For example:
+--            "local dynamic_spawn = ScenarioInfo.Options.dynamic_spawn or 1"
+--            If you want the default to be something different, then you also have to change it here.
+--            Also keep in mind to use the "key" of the selected option, which is not necessarily the
+--            same as "default" of the option (the default value specifies the number of the option that
+--            is used as the default).
+
 -- The options are now using the language that is set in the game for the names of the options and
 -- the explanation text. Most options that spawn a specific number of mexes have translations prepared
 -- for up to 9 mex. Just use for example "adaptive_middle_mex_key_7_help" when you want to have the
--- text for 7 mex. Keep in mind that you also have to adjust the lable, but NOT the key = XX of the option.
+-- text for 7 mex. Keep in mind that you also have to adjust the label, but NOT the key = XX of the option.
 -- If you do not want to use the standard text and write something different, just remove the 
 -- "<LOC adaptive_somethingsomething> the standard text you dont want" part and write your own text.
 -- Obviously this text wont translate and will always show english.
