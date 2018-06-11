@@ -8310,7 +8310,7 @@ adaptive_civ_base_key_2_help = "Спавнит обломки базы."
 adaptive_civ_base_key_3 = "Рабочая база"
 adaptive_civ_base_key_3_help = "Спавнит рабочую базу гражданских."
 
-adaptive_civ_def_label = "Гражданские укрепления",
+adaptive_civ_def_label = "Гражданские укрепления"
 adaptive_civ_def_label = "Спавнит вооруженные укрепления (враждебные или разрушенные) гражданских на центре карты."
 
 adaptive_civ_def_key_0_help = "Нету."
