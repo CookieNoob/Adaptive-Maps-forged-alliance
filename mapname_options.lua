@@ -35,10 +35,10 @@ options ={
         { text = "<LOC adaptive_dynamic_spawn_key_1_label> mirror slots", help = "<LOC adaptive_dynamic_spawn_key_1_help> Spawn resources for player & mirror slot (balanced resources).", key = 1, },
         { text = "<LOC adaptive_dynamic_spawn_key_2_label> used slots", help = "<LOC adaptive_dynamic_spawn_key_2_help> Only spawn resources for player on used slots (unbalanced resources).", key = 2, },
         { text = "<LOC adaptive_dynamic_spawn_key_3_label> no mirror = no resources", help = "<LOC adaptive_dynamic_spawn_key_3_help> Only spawn resources if mirror slot is also occupied by a player (not recommended, but it can make uneven matches fairer).", key = 3, },
-        -- { text = <LOC adaptive_dynamic_spawn_key_4_label> 2v2 setup", help = "<LOC adaptive_dynamic_spawn_key_4_help> Don't adjust for player & spawn resources for 2v2.", key = 4, },
-        -- { text = <LOC adaptive_dynamic_spawn_key_5_label> 4v4 setup", help = "<LOC adaptive_dynamic_spawn_key_5_help> Don't adjust for player & spawn resources for 4v4.", key = 5, },
-        -- { text = <LOC adaptive_dynamic_spawn_key_6_label> 6v6 setup", help = "<LOC adaptive_dynamic_spawn_key_6_help> Don't adjust for player & spawn resources for 6v6.", key = 6, },
-        -- { text = <LOC adaptive_dynamic_spawn_key_7_label> 8v8 setup", help = "<LOC adaptive_dynamic_spawn_key_7_help> Don't adjust for player & spawn resources for maximum player count.", key = 7, },
+        -- { text = "<LOC adaptive_dynamic_spawn_key_4_label> 2v2 setup", help = "<LOC adaptive_dynamic_spawn_key_4_help> Don't adjust for player & spawn resources for 2v2.", key = 4, },
+        -- { text = "<LOC adaptive_dynamic_spawn_key_5_label> 4v4 setup", help = "<LOC adaptive_dynamic_spawn_key_5_help> Don't adjust for player & spawn resources for 4v4.", key = 5, },
+        -- { text = "<LOC adaptive_dynamic_spawn_key_6_label> 6v6 setup", help = "<LOC adaptive_dynamic_spawn_key_6_help> Don't adjust for player & spawn resources for 6v6.", key = 6, },
+        -- { text = "<LOC adaptive_dynamic_spawn_key_7_label> 8v8 setup", help = "<LOC adaptive_dynamic_spawn_key_7_help> Don't adjust for player & spawn resources for maximum player count.", key = 7, },
     },
 },
 
@@ -202,13 +202,13 @@ options ={
 {
     default = 1,
     label = "<LOC adaptive_core_mex_label> Core Mexes",
-    help = "<LOC adaptive_core_mex_help> Spawn 3 or 4 core mexes.",
+    help = "<LOC adaptive_core_mex_2_help> Spawn 4 or 5 core mexes.",
     key = 'core_mexes',
     pref = 'core_mexes',
     values = {
 		-- there are no additional translations for this option
-        { text = "3", help = "<LOC adaptive_core_mex_key_3> Spawn 3 core mexes.", key = 1, },
-        { text = "4", help = "<LOC adaptive_core_mex_key_4> Spawn 4 core mexes.", key = 2, },
+        { text = "4", help = "<LOC adaptive_core_mex_key_4> Spawn 4 core mexes.", key = 1, },
+        { text = "5", help = "<LOC adaptive_core_mex_key_5> Spawn 5 core mexes.", key = 2, },
     },
 },
 
@@ -292,8 +292,8 @@ options ={
     pref = 'optional_civilian_base',
     values = {
         { text = "<LOC adaptive_disabled> disabled", help = "<LOC adaptive_civ_base_key_1_help> No civilian base.", key = 1, },
-        { text = "<LOC adaptive_civ_base_key_1> wreckage", help = "<LOC adaptive_civ_base_key_2_help> Spawn civilian base wreckage.", key = 2, },
-        { text = "<LOC adaptive_civ_base_key_2> operational", help = "<LOC adaptive_civ_base_key_3_help> Spawn operational civilian base.", key = 3, },
+        { text = "<LOC adaptive_civ_base_key_2> wreckage", help = "<LOC adaptive_civ_base_key_2_help> Spawn civilian base wreckage.", key = 2, },
+        { text = "<LOC adaptive_civ_base_key_3> operational", help = "<LOC adaptive_civ_base_key_3_help> Spawn operational civilian base.", key = 3, },
     },
 },
 
