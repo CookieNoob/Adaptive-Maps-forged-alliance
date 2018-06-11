@@ -8298,8 +8298,10 @@ adaptive_expansion_mex_key_9 = "Erstellt 9 Masseextraktoren in der Expansion."
 
 adaptive_core_mex_label = "Start Mexes"
 adaptive_core_mex_help = "Erstellt 3 or 4 Start-Masseextraktoren."
+adaptive_core_mex_2_help = "Erstellt 4 or 5 Start-Masseextraktoren."
 adaptive_core_mex_key_3 = "Erstellt 3 Start-Masseextraktoren."
 adaptive_core_mex_key_4 = "Erstellt 4 Start-Masseextraktoren."
+adaptive_core_mex_key_5 = "Erstellt 5 Start-Masseextraktoren."
 
 adaptive_extra_base_mex_label = "Extra Basis Mexes"
 adaptive_extra_base_mex_help = "Erstellt zusätzliche Masseextraktoren für jeden Spieler in der Nähe der Startposition (weiter entfernt von den Start-Masseextraktoren)."

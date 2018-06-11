@@ -8087,8 +8087,10 @@ adaptive_expansion_mex_key_9 = "Spawn 9 mexes in the expansion."
 
 adaptive_core_mex_label = "Core Mexes"
 adaptive_core_mex_help = "Spawn 3 or 4 core mexes."
+adaptive_core_mex_2_help = "Spawn 4 or 5 core mexes."
 adaptive_core_mex_key_3 = "Spawn 3 core mexes."
 adaptive_core_mex_key_4 = "Spawn 4 core mexes."
+adaptive_core_mex_key_5 = "Spawn 5 core mexes."
 
 adaptive_extra_base_mex_label = "Extra Base Mexes"
 adaptive_extra_base_mex_help = "Spawns additional mexes for each player in the starting base (further away from core mexes)."
