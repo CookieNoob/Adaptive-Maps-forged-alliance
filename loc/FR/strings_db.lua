@@ -8263,9 +8263,9 @@ adaptive_civ_base_label = "Civilian Base"
 adaptive_civ_base_help = "Spawn civilian base in the middle of the map."
 
 adaptive_civ_base_key_1_help = "No civilian base."
-adaptive_civ_base_key_1 = "wreckage"
+adaptive_civ_base_key_2 = "wreckage"
 adaptive_civ_base_key_2_help = "Spawn civilian base wreckage."
-adaptive_civ_base_key_2 = "operational"
+adaptive_civ_base_key_3 = "operational"
 adaptive_civ_base_key_3_help = "Spawn operational civilian base."
 
 adaptive_civ_def_label = "Civilian Defenses"

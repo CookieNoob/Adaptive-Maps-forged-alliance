@@ -8348,9 +8348,9 @@ adaptive_factional_wreckage_help = "Erstelle Gebäude-Wrackteile. Die Art der Wr
 adaptive_civ_base_label = "Zivile Basis"
 adaptive_civ_base_help = "Erstellt eine zivile Basis in der Kartenmitte."
 adaptive_civ_base_key_1_help = "Keine zivile Basis."
-adaptive_civ_base_key_1 = "Wrackteile"
+adaptive_civ_base_key_2 = "Wrackteile"
 adaptive_civ_base_key_2_help = "Erstellt die zivile Basis als Wrackteile."
-adaptive_civ_base_key_2 = "Funktionsfähig"
+adaptive_civ_base_key_3 = "Funktionsfähig"
 adaptive_civ_base_key_3_help = "Erstellt eine funktionsfähige zivile Basis."
 
 adaptive_civ_def_label = "Zivile Verteidigungen"
